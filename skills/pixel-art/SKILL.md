@@ -1,6 +1,6 @@
 ---
 name: pixel-art
-description: Draws pixel-art sprites (characters, items, icons, props) as real PNGs at any size, from 16×16 icons to 64×64 characters, matched to a game's style. Small sprites are written directly as a palette plus a character grid; larger ones are built with a construction kit plus hand-drawn detail windows; an image model (Codex gpt-image) can optionally supply the design. Use when asked to draw, design or fix pixel art or game sprites, or to match a game's sprite style. Ships a measured style card for Eastward (风起之国).
+description: Draws pixel-art sprites (characters, items, icons, props) as real PNGs at any size, from 16×16 icons to 64×64 characters, matched to a game's style. Small sprites are written directly as a palette plus a character grid; larger ones are built with a construction kit plus hand-drawn detail windows; an image model (Codex gpt-image) can optionally supply the design. Use when asked to draw, design or fix pixel art or game sprites, or to match a game's sprite style. Ships a measured style card for Eastward (风来之国).
 ---
 
 # Pixel art

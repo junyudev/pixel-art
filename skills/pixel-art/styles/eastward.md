@@ -1,4 +1,4 @@
-# Style card: Eastward (风起之国)
+# Style card: Eastward (风来之国)
 
 Numbers come from 220 clean 1× character sprites (`tools/style_stats.py` over the sprite atlas) and
 measurement of in-game screenshots. Screenshots carry engine grading, bloom and filtering, so take colors

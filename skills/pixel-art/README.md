@@ -8,7 +8,7 @@ An agent skill that draws pixel-art sprites as real PNGs at any size, from 16×1
 | over 32 px | Construct | Code builds the figure and one light from polygons; the agent draws faces, hands and details at full size in ≤ 16×16 windows. |
 | 32 px and up, optional | Concept | Codex image generation (gpt-image) designs the sprite; `tools/elastic2px.py` recovers the true pixels. |
 
-Ships a measured style card for Eastward (风起之国): sizes, a shared palette, and face, hand and head grammar as text.
+Ships a measured style card for Eastward (风来之国): sizes, a shared palette, and face, hand and head grammar as text.
 
 ## Install
 
