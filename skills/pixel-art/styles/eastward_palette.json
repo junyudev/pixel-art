@@ -1,0 +1,18 @@
+{
+  "_doc": "Eastward shared colors (used by 15-75% of 220 sprites; together a median 59% of each sprite's pixels). letter -> [hex variants, role]. Used by tools/refs.py text --map.",
+  "o": [["#281913", "#271913"], "ink"],
+  "b": [["#5b3711", "#5a3611"], "shadow brown: mouths, beard/hair shadow, leather, deep folds"],
+  "d": [["#8f482c"], "deep skin / red-brown: lips, nostrils, dark blush"],
+  "s": [["#d36d45", "#d16b46"], "skin shadow: nose shape, sockets, jaw, blush, cast shadow under hair"],
+  "r": [["#ca4d2e"], "warm red accent"],
+  "S": [["#f9d18c", "#fad388"], "skin base"],
+  "K": [["#f9c972"], "skin variant"],
+  "W": [["#f9e9a5"], "cream highlight: teeth, eye whites, hair/cloth highlight"],
+  "w": [["#eedea5"], "cream cloth"],
+  "g": [["#625847"], "muted olive-grey cloth / grey hair shadow"],
+  "u": [["#686090"], "muted violet: cool shadow, denim"],
+  "e": [["#7c8775"], "sage grey-green cloth"],
+  "t": [["#b98b53"], "tan: leather, straw, wood"],
+  "n": [["#ae702d"], "brown-orange: hair, wood"],
+  "y": [["#ca7819", "#f8b838"], "ochre/yellow"]
+}

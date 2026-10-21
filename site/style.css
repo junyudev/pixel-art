@@ -1,0 +1,210 @@
+/* Pixel Bench — pixel UI. Palette after PICO-8; fonts: Press Start 2P (display), Pixelify Sans (text),
+   Fusion Pixel 12px (Chinese). All OFL, bundled in fonts/. */
+@font-face { font-family: "Press Start 2P"; src: url(fonts/press-start-2p-latin-400-normal.woff2) format("woff2"); font-display: swap; }
+@font-face { font-family: "Pixelify Sans"; font-weight: 400; src: url(fonts/pixelify-sans-latin-400-normal.woff2) format("woff2"); font-display: swap; }
+@font-face { font-family: "Pixelify Sans"; font-weight: 600; src: url(fonts/pixelify-sans-latin-600-normal.woff2) format("woff2"); font-display: swap; }
+@font-face { font-family: "Fusion Pixel"; src: url(fonts/fusion-pixel-12px-proportional-zh_hans.otf.woff2) format("woff2"); font-display: swap; }
+
+:root, [data-theme="dark"] {
+  --bg: #111016; --card: #1a1822; --card-2: #16141d; --border: #2e2a3b; --frame: #4a4360; --fg: #f1edf6;
+  --muted: #a49cb4; --faint: #6f6880; --accent: #ffa300; --accent-ink: #ffa300; --on-accent: #111016;
+  --glow: #83769c; --grid-dot: #f1edf612; --canvas-a: #1d1a26; --canvas-b: #16141d; --good: #00e436; --bad: #ff77a8;
+  --gold: #ffec27; --silver: #c2c3c7; --bronze: #ab5236; --sky: #29adff; --stage: #cdb98a;
+}
+[data-theme="light"] {
+  --bg: #f8f6fa; --card: #ffffff; --card-2: #f1edf5; --border: #ddd6e6; --frame: #b9afc8; --fg: #1b1824;
+  --muted: #5d5670; --faint: #8f87a0; --accent: #ffa300; --accent-ink: #9a5c00; --on-accent: #1b1824;
+  --glow: #c8bedb; --grid-dot: #1b18241f; --canvas-a: #f1edf5; --canvas-b: #e7e1ee; --good: #008751; --bad: #c8003c;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bg); color: var(--fg); }
+body {
+  margin: 0; min-height: 100vh; font: 18px/1.55 "Pixelify Sans", "Fusion Pixel", system-ui, sans-serif;
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px); background-size: 16px 16px;
+  -webkit-font-smoothing: none; font-smooth: never;
+}
+:lang(zh) body, html[lang="zh"] body { font-family: "Pixelify Sans", "Fusion Pixel", system-ui, sans-serif; }
+a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--accent-ink); }
+img.spr, .stage img { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.skip { position: absolute; left: -999px; } .skip:focus { left: 8px; top: 8px; z-index: 9; background: var(--accent); color: var(--on-accent); padding: 6px; }
+
+/* type */
+.display, h1, h2, h3.display { font-family: "Press Start 2P", "Fusion Pixel", monospace; font-weight: 400; letter-spacing: .02em; }
+h1 { font-size: clamp(28px, 4.6vw, 52px); line-height: 1.25; margin: 0 0 24px; text-shadow: 4px 4px 0 var(--glow); }
+h2 { font-size: 22px; line-height: 1.4; margin: 0 0 12px; display: flex; align-items: center; gap: 14px; }
+h2::before { content: ""; width: 16px; height: 16px; flex: none; background:
+  linear-gradient(var(--accent) 0 0) 0 0 / 10px 10px no-repeat, linear-gradient(#9a5c00 0 0) 6px 6px / 10px 10px no-repeat; }
+h3 { font-size: 15px; margin: 0; }
+html[lang="zh"] h1, html[lang="zh"] h2, html[lang="zh"] .display { font-family: "Press Start 2P", "Fusion Pixel", monospace; letter-spacing: .04em; }
+html[lang="zh"] h1 { font-size: clamp(30px, 4.4vw, 50px); }
+.eyebrow { font-family: "Press Start 2P", "Fusion Pixel", monospace; font-size: 11px; color: var(--accent-ink); letter-spacing: .12em;
+  display: flex; align-items: center; gap: 10px; margin: 0 0 18px; text-transform: uppercase; }
+.eyebrow::before { content: ""; width: 8px; height: 8px; background: var(--accent); }
+.holo { background: linear-gradient(90deg, #8fe0a8, #7cc4f5, #b7a0f5, #f59cd0, #f5c27c); -webkit-background-clip: text; background-clip: text;
+  color: transparent; text-shadow: none; }
+.muted { color: var(--muted); } .faint { color: var(--faint); } .small { font-size: 15px; } .tiny { font-size: 13px; }
+.lead { font-size: 19px; color: var(--muted); max-width: 680px; }
+p.note { color: var(--muted); font-size: 15px; max-width: 760px; margin: 4px 0 18px; }
+
+/* layout */
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 28px; }
+section { margin: 72px 0; }
+.top { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent);
+  border-bottom: 4px solid var(--frame); backdrop-filter: blur(4px); }
+.top .wrap { display: flex; align-items: center; gap: 28px; height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: "Press Start 2P", monospace; font-size: 14px; text-decoration: none; }
+.brand svg { width: 24px; height: 24px; }
+nav.main { display: flex; gap: 22px; flex: 1; }
+nav.main a { font-family: "Press Start 2P", "Fusion Pixel", monospace; font-size: 11px; color: var(--muted); text-decoration: none; padding: 6px 0;
+  border-bottom: 3px solid transparent; }
+nav.main a.on, nav.main a:hover { color: var(--fg); border-color: var(--accent); }
+.tools { display: flex; gap: 10px; align-items: center; }
+.iconbtn { background: none; border: 0; color: var(--muted); font: 13px "Press Start 2P", "Fusion Pixel", monospace; cursor: pointer; padding: 6px; }
+.iconbtn:hover { color: var(--accent-ink); }
+@media (max-width: 860px) { nav.main { display: none; } .top .wrap { gap: 12px; } }
+
+/* pixel frame: notched 4px corners */
+.frame { --n: 4px; position: relative; background: var(--card); border: 4px solid var(--frame);
+  clip-path: polygon(0 var(--n), var(--n) var(--n), var(--n) 0, calc(100% - var(--n)) 0, calc(100% - var(--n)) var(--n), 100% var(--n),
+    100% calc(100% - var(--n)), calc(100% - var(--n)) calc(100% - var(--n)), calc(100% - var(--n)) 100%, var(--n) 100%,
+    var(--n) calc(100% - var(--n)), 0 calc(100% - var(--n))); }
+.panel { border: 2px solid var(--border); background: var(--card-2); padding: 10px 12px; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 13px/1 "Press Start 2P", "Fusion Pixel", monospace; padding: 14px 16px;
+  text-decoration: none; cursor: pointer; border: 4px solid var(--frame); background: var(--card); color: var(--fg);
+  box-shadow: 4px 4px 0 var(--border); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: #c27c00; }
+.btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--border); color: inherit; }
+.btn.primary:hover { color: var(--on-accent); }
+.btn.sm { font-size: 10px; padding: 9px 10px; border-width: 3px; box-shadow: 3px 3px 0 var(--border); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 56px; align-items: center; padding-top: 72px; }
+.hero .ctas { display: flex; gap: 16px; margin: 28px 0 36px; flex-wrap: wrap; }
+.stats { display: flex; gap: 56px; border-top: 4px dashed var(--border); padding-top: 22px; max-width: 560px; }
+.stats b { display: block; font: 26px "Press Start 2P", monospace; margin-bottom: 8px; }
+.stats span { font-size: 14px; color: var(--muted); }
+.window .bar { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 4px solid var(--frame);
+  font: 11px "Press Start 2P", "Fusion Pixel", monospace; color: var(--muted); }
+.window .bar i { width: 8px; height: 8px; display: inline-block; } .window .bar span { margin-left: 8px; }
+.window .body { display: grid; grid-template-columns: 1fr 1fr; }
+.window figure { margin: 0; } .window figcaption { text-align: center; font-size: 14px; color: var(--muted); padding: 8px; }
+.window figure + figure { border-left: 4px solid var(--frame); }
+.caption { font-size: 14px; color: var(--muted); margin-top: 10px; text-align: right; }
+@media (max-width: 960px) { .hero { grid-template-columns: 1fr; } }
+
+/* sprite stage: checker canvas, sprite bottom-aligned at an integer scale */
+.stage { display: flex; align-items: flex-end; justify-content: center; padding: 18px 12px 14px;
+  background: repeating-conic-gradient(var(--canvas-a) 0 25%, var(--canvas-b) 0 50%) 0 0 / 16px 16px; }
+.stage.sand { background: var(--stage); }
+
+/* card grids */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 22px; }
+.card { display: flex; flex-direction: column; text-decoration: none; transition: transform .08s; }
+a.card:hover { transform: translate(-2px, -2px); color: inherit; }
+.card .title { margin: 10px 10px 0; font: 11px/1.6 "Press Start 2P", "Fusion Pixel", monospace; }
+.card .stage { margin: 10px; border: 2px solid var(--border); }
+.card .meta { margin: 0 10px 10px; font-size: 14px; color: var(--muted); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.pair .stage + .stage { border-left: 0; }
+.tag { display: inline-block; font: 9px/1 "Press Start 2P", "Fusion Pixel", monospace; padding: 4px 5px; margin-right: 6px; vertical-align: 1px;
+  background: var(--accent); color: var(--on-accent); }
+.tag.alt { background: var(--sky); } .tag.dim { background: var(--border); color: var(--muted); }
+.win { color: var(--good); } .loss { color: var(--bad); }
+
+/* benchmark cards */
+.bench { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 28px; }
+.bench .frame { padding: 22px 24px; }
+.bench h3 { font: 15px/1.6 "Press Start 2P", "Fusion Pixel", monospace; margin-bottom: 6px; }
+ol.mini { list-style: none; padding: 0; margin: 16px 0 0; }
+ol.mini li { display: grid; grid-template-columns: 26px 1fr auto auto; gap: 12px; align-items: center; padding: 6px 0; font-size: 16px; }
+ol.mini .n { color: var(--faint); font-family: "Press Start 2P", monospace; font-size: 11px; }
+ol.mini .v { font: 13px "Press Start 2P", monospace; }
+
+/* segmented bar */
+.seg { display: inline-flex; gap: 2px; padding: 2px; border: 2px solid var(--frame); background: var(--card-2); vertical-align: middle; }
+.seg i { width: 6px; height: 12px; background: var(--border); }
+.seg i.on { background: var(--accent); }
+
+/* leaderboard */
+table.lb { width: 100%; border-collapse: collapse; font-size: 16px; }
+table.lb th { font: 10px/1.4 "Press Start 2P", "Fusion Pixel", monospace; color: var(--muted); text-align: left; padding: 12px 10px;
+  border-bottom: 4px solid var(--frame); white-space: nowrap; }
+table.lb td { padding: 12px 10px; border-bottom: 3px dashed var(--border); vertical-align: middle; }
+table.lb tr.release td { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+table.lb tr.release td:first-child { box-shadow: inset 4px 0 0 var(--accent); }
+table.lb td.num { font: 13px "Press Start 2P", monospace; white-space: nowrap; }
+table.lb .name { font: 12px/1.6 "Press Start 2P", "Fusion Pixel", monospace; }
+table.lb .sub { font-size: 14px; color: var(--muted); }
+.lbwrap { padding: 8px 14px 14px; overflow-x: auto; }
+.rank { display: inline-grid; place-items: center; width: 30px; height: 30px; font: 12px "Press Start 2P", monospace;
+  border: 3px solid var(--frame); background: var(--card-2); }
+.rank.r1 { background: var(--gold); color: #1b1824; border-color: #c9a800; }
+.rank.r2 { background: var(--silver); color: #1b1824; border-color: #8d8e93; }
+.rank.r3 { background: var(--bronze); color: #fff; border-color: #7a3a24; }
+
+/* charts */
+svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
+svg.chart text { font-family: "Pixelify Sans", "Fusion Pixel", sans-serif; fill: var(--muted); font-size: 13px; }
+svg.chart .lbl { fill: var(--fg); }
+svg.chart line.grid { stroke: var(--border); stroke-dasharray: 2 4; }
+svg.chart line.axis { stroke: var(--frame); stroke-width: 2; }
+.chartbox { padding: 18px 20px; }
+#tip { position: fixed; pointer-events: none; z-index: 20; background: var(--card); color: var(--fg); border: 3px solid var(--frame);
+  padding: 6px 9px; font-size: 14px; opacity: 0; max-width: 360px; transition: opacity .08s; }
+
+/* heatmap table */
+table.heat { border-collapse: separate; border-spacing: 3px; font-size: 14px; }
+table.heat th { font: 9px "Press Start 2P", "Fusion Pixel", monospace; color: var(--muted); padding: 4px 6px; text-align: center; }
+table.heat th.row { text-align: right; font-size: 10px; color: var(--fg); }
+table.heat td { width: 58px; height: 30px; text-align: center; font-family: "Press Start 2P", monospace; font-size: 10px; }
+
+/* character page */
+.task-head { display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: start; margin-top: 56px; }
+.task-head .frame { padding: 0; }
+.brief { font-size: 19px; max-width: 720px; }
+.attempts { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.attempt .scorebar { display: flex; justify-content: space-between; align-items: center; margin: 0 10px 6px; font-size: 14px; }
+.attempt details { margin: 0 10px 10px; font-size: 14px; color: var(--muted); }
+.attempt details summary { cursor: pointer; color: var(--fg); font-size: 13px; }
+.attempt details ul { padding-left: 18px; margin: 6px 0 0; }
+.attempt.orig .stage { outline: 3px solid var(--accent); outline-offset: -3px; }
+@media (max-width: 760px) { .task-head { grid-template-columns: 1fr; } }
+
+/* routes */
+.routes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.routes .frame { padding: 20px; }
+.routes .size { font: 20px "Press Start 2P", monospace; color: var(--accent-ink); margin: 8px 0 12px; }
+@media (max-width: 960px) { .routes { grid-template-columns: 1fr; } }
+pre, code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 14px; }
+pre { background: var(--card-2); border: 2px solid var(--border); padding: 12px 14px; overflow-x: auto; }
+ol.steps li, ul.plain li { margin: 6px 0; }
+.small-grid td, .small-grid th { padding: 8px; vertical-align: bottom; }
+.small-grid th { font: 10px/1.7 "Press Start 2P", "Fusion Pixel", monospace; color: var(--muted); text-align: left; }
+
+footer { border-top: 4px solid var(--frame); margin-top: 96px; padding: 36px 0 48px; color: var(--muted); font-size: 15px; }
+footer .cols { display: flex; gap: 72px; flex-wrap: wrap; }
+footer h4 { font: 10px "Press Start 2P", "Fusion Pixel", monospace; color: var(--fg); margin: 0 0 10px; }
+footer a { display: block; text-decoration: none; margin: 4px 0; }
+
+/* Chinese: Fusion Pixel is drawn on a 12 px grid, so keep CJK text at 12/24/36/48 px to stay crisp */
+html[lang="zh"] nav.main a, html[lang="zh"] .eyebrow, html[lang="zh"] .btn, html[lang="zh"] .btn.sm, html[lang="zh"] .tag,
+html[lang="zh"] table.lb th, html[lang="zh"] table.heat th, html[lang="zh"] .small-grid th, html[lang="zh"] footer h4,
+html[lang="zh"] .card .title, html[lang="zh"] .iconbtn, html[lang="zh"] .window .bar { font-size: 12px; }
+html[lang="zh"] h1 { font-size: 48px; line-height: 1.35; }
+html[lang="zh"] h2, html[lang="zh"] .bench h3 { font-size: 24px; }
+html[lang="zh"] body { font-size: 18px; }
+html[lang="zh"] .lead, html[lang="zh"] .brief { font-size: 18px; line-height: 1.75; }
+
+/* install command: one copyable line in a pixel frame */
+.install { display: flex; align-items: center; gap: 12px; max-width: 560px; margin: 24px 0 6px; padding: 12px 12px 12px 16px;
+  background: var(--card-2); border: 4px solid var(--frame); box-shadow: 4px 4px 0 var(--border); }
+.install code { flex: 1; font: 15px/1.4 ui-monospace, "SF Mono", Menlo, monospace; color: var(--fg); white-space: nowrap; overflow-x: auto; }
+.install .prompt { color: var(--accent-ink); user-select: none; }
+.install .copy { font: 11px "Press Start 2P", "Fusion Pixel", monospace; padding: 8px 10px; cursor: pointer; border: 3px solid #c27c00;
+  background: var(--accent); color: var(--on-accent); }
+.install-note { margin: 0 0 4px; max-width: 560px; }
+html[lang="zh"] .install .copy { font-size: 12px; }
