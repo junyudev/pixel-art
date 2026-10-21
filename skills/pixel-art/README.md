@@ -30,3 +30,4 @@ Ask your agent for a sprite: "Draw a 16×16 health potion icon", "Make a 48×64 
 - **Construct route:** redrawing 10 real Eastward characters from a 3–5 sentence brief, never seeing the original, it beat the previous best version's drawings 15–5 and rates first of 11 entries.
 - **Grid route:** on fixed briefs with no original, it beat plain Opus 9–1 at 16×16; at 32×32 plain Opus was slightly ahead (5–3), and the grid route beat the construct route 7–1 at a quarter of the cost.
 - **Concept route:** tested end to end with Codex image generation; its earlier version is on the same leaderboard as "image-gen".
+- **Against no skill:** with a plain prompt, Opus 5.5 scores 8–12 against the same reconstruction anchor (15–5 with the skill). GPT-6 Astra on Codex gains most from the grid route (33–9 over its own plain small sprites), but its construct-route characters score below its plain ones (4–16 vs 8–12), so on Astra use the grid route.

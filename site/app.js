@@ -12,11 +12,18 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 const S = {
   en: {
     getSkill: "Get the skill", navBoard: "Leaderboard", navChars: "Characters", navSmall: "Small sprites", navMethod: "Method",
-    navSkill: "Skill", eyebrowHome: "Benchmark & skill",
-    heroA: "Real game sprites, ", heroB: "redrawn", heroC: " from three lines.",
-    heroLead: "An agent gets a 3–5 sentence brief of a character from Eastward and never sees the original. Its drawing is then set beside the real sprite and judged blind, criterion by criterion. Every skill version we built is on the board, and so is the skill we ship.",
+    navSkill: "Skill", eyebrowHome: "Agent skill · benchmark",
+    heroA: "Pixel art, ", heroB: "written", heroC: " pixel by pixel.",
+    heroLead: "pixel-art is an agent skill that draws sprites as true pixel grids, from 16×16 icons to 64×64 characters. Pixel Bench measures it with blind paired judging, including against real Eastward sprites.",
+    stCaption: "The grid route: a palette, one character per pixel, rendered as is.",
+    showTitle: "16×16, written as text", showLead: "The same 12 briefs for each model, with the skill and without. With it, the agent writes the grid, renders it and fixes what doesn't read at 1×. All at extra-high effort.",
+    noSkill: "no skill", judged: "Blind judging", skillVs: "pixel-art vs no skill", bothSkill: "both with pixel-art",
+    conceptTitle: "64×64, from a gpt-image concept", conceptLead: "The concept route: Codex image generation designs the character, a converter recovers the true pixels, and the agent picks, edits and cleans up.",
+    conceptA: "gpt-image concept", conceptB: "true pixels",
+    reconTitle: "Redrawn from three lines", reconLead: "Real Eastward characters, drawn from a 3–5 sentence brief by an agent that never saw them, then judged blind against the original.",
+    vsV12: (w, n) => `vs v12: ${w}–${n - w}`, setSuite: "Benchmark tasks", setShowcase: "Showcase · 16×16", setConcept: "Concept route · 64×64",
     ctaBoard: "See the leaderboard", ctaSkill: "Get the skill",
-    stChars: "characters", stEntries: "entries", stDrawings: "drawings", stJudgings: "judgings",
+    stChars: "characters", stEntries: "entries", stTasks: "tasks", stDrawings: "drawings", stJudgings: "judgings",
     original: "original", redrawn: "redrawn", heroCaption: (n, e) => `${n}: the original next to ${e}'s drawing from the brief alone.`,
     charsTitle: "Original vs. redrawn", allChars: "All characters →",
     benchTitle: "The benchmarks", benchLead: "Same brief, same canvas, same reference pack with the target removed, judged against the same rubric.",
@@ -26,7 +33,7 @@ const S = {
     runs: (n) => `${n} judgings`, rating: "Rating", boardTitle: "Leaderboard",
     boardNote: "Rating: a Bradley–Terry fit over every paired judging, on an Elo-like scale where 1000 is the average entry. The bar is a 90 % interval from resampling whole characters. Overlapping bars mean the judges can't tell those entries apart yet.",
     thEntry: "Entry", thRating: "Rating (90 % interval)", thVs: "vs v12", thMean: "Mean /70", thCalls: "Calls", thOut: "Output", thMin: "Minutes", thDrawn: "Drawn",
-    histTitle: "Ratings across versions", histNote: "In the order the versions were written. Each new rule set was meant to fix what judges complained about; the ratings stayed within each other's intervals.",
+    histTitle: "Ratings across versions", histNote: "In the order the versions were written. Each new rule set was meant to fix what judges complained about; the ratings stayed within each other's intervals. Dashed lines: the same models with no skill.",
     critTitle: "Scores by criterion", critNote: "Mean score out of 10 over every judging of the entry. Opponents differ between entries, so read rows, not small gaps.",
     costNote: "Cost is the median per drawing: API calls, output tokens and active minutes (interruptions subtracted). The image-gen route also calls an external image model, not counted here.",
     charsLead: "Each character is drawn only from its brief. Held-out characters were chosen after the skill version under test was written.",
@@ -45,11 +52,18 @@ const S = {
   },
   zh: {
     getSkill: "获取技能", navBoard: "排行榜", navChars: "角色", navSmall: "小尺寸", navMethod: "方法", navSkill: "技能",
-    eyebrowHome: "基准测试与技能",
-    heroA: "真实游戏角色，", heroB: "只凭三行描述", heroC: "重画。",
-    heroLead: "agent 只拿到《风来之国》里某个角色的 3–5 句描述，从未见过原图。画完后把它放在真实精灵图旁边，由评审盲评、逐项打分。我们做过的每个技能版本都在榜上，正式发布的技能也在。",
+    eyebrowHome: "agent 技能 · 基准测试",
+    heroA: "像素画，", heroB: "一格一格", heroC: "写出来。",
+    heroLead: "pixel-art 是一个 agent 技能，把精灵图当作真正的像素网格来画，从 16×16 图标到 64×64 角色。Pixel Bench 用成对盲评来衡量它，包括与《风来之国》真实精灵图对照。",
+    stCaption: "字符矩阵路线：一份调色板，每个像素一个字符，原样渲染。",
+    showTitle: "16×16，直接写成文本", showLead: "同样 12 道题，每个模型各画两次：用技能和不用技能。用技能时，agent 写出网格、渲染、在 1× 下修改看不清的地方。全部使用 extra-high effort。",
+    noSkill: "不用技能", judged: "盲评", skillVs: "用技能 vs 不用", bothSkill: "都用技能",
+    conceptTitle: "64×64，从 gpt-image 概念图出发", conceptLead: "生图路线：Codex 的 gpt-image 设计角色，转换器还原真正的像素，agent 负责挑选、修改和清理。",
+    conceptA: "gpt-image 概念图", conceptB: "真像素",
+    reconTitle: "只凭三行描述重画", reconLead: "真实的《风来之国》角色，由从未见过原图的 agent 只凭 3–5 句描述画出，再与原图对照盲评。",
+    vsV12: (w, n) => `对 v12：${w}–${n - w}`, setSuite: "测试题", setShowcase: "展示 · 16×16", setConcept: "生图路线 · 64×64",
     ctaBoard: "查看排行榜", ctaSkill: "获取技能",
-    stChars: "个角色", stEntries: "个参赛版本", stDrawings: "张图", stJudgings: "次评审",
+    stChars: "个角色", stEntries: "个参赛版本", stTasks: "道题", stDrawings: "张图", stJudgings: "次评审",
     original: "原图", redrawn: "重画", heroCaption: (n, e) => `${n}：原图与 ${e} 只凭描述画出的图。`,
     charsTitle: "原图与重画", allChars: "全部角色 →",
     benchTitle: "测试项目", benchLead: "同样的描述、同样的画布、同一个去掉了目标角色的参考素材包，用同一套标准评审。",
@@ -59,7 +73,7 @@ const S = {
     runs: (n) => `${n} 次评审`, rating: "评分", boardTitle: "排行榜",
     boardNote: "评分：对全部成对评审做 Bradley–Terry 拟合，采用类似 Elo 的尺度，1000 为平均水平。横条是按角色重抽样得到的 90% 区间；区间重叠说明评审目前还分不出高下。",
     thEntry: "版本", thRating: "评分（90% 区间）", thVs: "对 v12", thMean: "平均 /70", thCalls: "调用", thOut: "输出", thMin: "分钟", thDrawn: "图数",
-    histTitle: "各版本的评分", histNote: "按版本编写的先后排列。每一版新规则都是针对评审的意见写的，但评分始终落在彼此的区间之内。",
+    histTitle: "各版本的评分", histNote: "按版本编写的先后排列。每一版新规则都是针对评审的意见写的，但评分始终落在彼此的区间之内。虚线：同样的模型不用技能。",
     critTitle: "各项得分", critNote: "该版本在所有评审中的平均分（满分 10）。各版本的对手不同，看整行，不要看细微差距。",
     costNote: "成本是每张图的中位数：API 调用次数、输出 token、实际用时（已扣除中断）。生图路线另外调用了外部图像模型，未计入。",
     charsLead: "每个角色只凭描述来画。“保留角色”是在被测版本写完之后才选出的。",
@@ -81,8 +95,21 @@ let lang = html.lang === "zh" ? "zh" : "en";
 const t = (k, ...a) => { const v = S[lang][k] ?? S.en[k]; return typeof v === "function" ? v(...a) : v; };
 const L = (o) => (o && typeof o === "object" ? o[lang] ?? o.en : o);
 
+const NAMES = {
+  apple: ["Apple", "苹果"], key: ["Key", "钥匙"], heart: ["Heart", "心"], gem: ["Gem", "宝石"], lantern: ["Lantern", "油灯"],
+  spellbook: ["Spellbook", "魔法书"], bomb: ["Bomb", "炸弹"], ghost: ["Ghost", "幽灵"], frog: ["Frog", "青蛙"],
+  campfire: ["Campfire", "篝火"], witch: ["Witch", "女巫"], robot: ["Robot", "机器人"], noodle: ["Noodle vendor", "面摊老板"],
+  mechanic: ["Mechanic", "机械师"], fisherman: ["Old fisherman", "老渔夫"], fox: ["Fox ranger", "狐狸游侠"],
+};
+const taskName = (id) => (NAMES[id] ? NAMES[id][lang === "zh" ? 1 : 0] : id);
+// Reconstruction entries by model and skill (true = pixel-art 1.0, false = the no-skill baseline).
+const RECON = { opus: { name: "Opus 5.5", true: "v8R", false: "opusraw" }, astra: { name: "GPT-6 Astra", true: "astra", false: "astraraw" } };
+// 16×16 showcase rows: model, skill entry, no-skill entry.
+const SHEET = [["Opus 5.5", "opusx", "base"], ["GPT-6 Astra", "astra", "astraraw"]];
+let reconModel = "opus", reconSkill = true, heroTimer = null;
+
 // ---------- helpers ----------
-const entryLabel = (e) => (D.entries[e] ? D.entries[e].label : D.sizeEntries[e] ? L(D.sizeEntries[e].label) : e);
+const entryLabel = (e) => (D.entries[e] ? D.entries[e].label.replace("no skill", t("noSkill")) : D.sizeEntries[e] ? L(D.sizeEntries[e].label) : e);
 const entryNote = (e) => (D.entries[e] ? L(D.entries[e].note) : "");
 const task = (id) => D.recon.tasks.find((x) => x.id === id);
 const mean = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
@@ -104,9 +131,6 @@ const rankBadge = (i) => `<span class="rank ${i < 3 ? "r" + (i + 1) : ""}">${i +
 // ---------- pages ----------
 function home() {
   const R = D.recon;
-  const rel = R.attempts.filter((a) => D.entries[a.entry]?.release && a.judgings.length);
-  const pick = (rel.length ? rel : R.attempts.filter((a) => a.judgings.length)).sort((a, b) => avgTotal(b) - avgTotal(a))[0];
-  const tk = task(pick.task);
   const drawings = R.attempts.length + D.small.attempts.length + D.early.attempts.length;
   const judgings = R.judgings + D.small.attempts.reduce((n, a) => n + a.judgings.length, 0) / 2;
   const board = R.leaderboard.slice(0, 5);
@@ -121,51 +145,127 @@ function home() {
       ${installBox()}
       <div class="ctas"><a class="btn primary" href="#/leaderboard">${t("ctaBoard")}</a><a class="btn" href="#/skill">${t("ctaSkill")}</a></div>
       <div class="stats">
-        <div><b>${R.tasks.length}</b><span>${t("stChars")}</span></div>
-        <div><b>${R.leaderboard.length}</b><span>${t("stEntries")}</span></div>
+        <div><b>${R.tasks.length + D.small.tasks.length}</b><span>${t("stTasks")}</span></div>
         <div><b>${drawings}</b><span>${t("stDrawings")}</span></div>
         <div><b>${Math.round(judgings)}</b><span>${t("stJudgings")}</span></div>
       </div>
     </div>
-    <div>
-      <div class="frame window">
-        <div class="bar"><i style="background:#ff004d"></i><i style="background:#ffec27"></i><i style="background:#00e436"></i><span>${esc(tk.id)}.png</span></div>
-        <div class="body">
-          <figure><div class="stage sand" style="height:300px">${spr(tk.original, 250, tk.name)}</div><figcaption>${t("original")}</figcaption></figure>
-          <figure><div class="stage sand" style="height:300px">${spr(pick, 250, entryLabel(pick.entry))}</div><figcaption>${esc(entryLabel(pick.entry))}</figcaption></figure>
-        </div>
-      </div>
-      <p class="caption">${t("heroCaption", esc(tk.name), esc(entryLabel(pick.entry)))} <a href="#/characters/${tk.id}">→</a></p>
-    </div>
+    <div>${spriteTextWindow()}</div>
   </section>
-  <section>
-    <div style="display:flex;justify-content:space-between;align-items:baseline"><h2>${t("charsTitle")}</h2><a class="small" href="#/characters">${t("allChars")}</a></div>
-    <div class="cards">${R.tasks.map((x) => charCard(x)).join("")}</div>
-  </section>
+  ${showcase()}
+  ${conceptSection()}
+  <section id="recon">${reconSection()}</section>
   <section>
     <h2>${t("benchTitle")}</h2><p class="note">${t("benchLead")}</p>
     <div class="bench">
-      <a class="frame card" href="#/leaderboard" style="padding:22px 24px">
+      <a class="frame card" href="#/leaderboard">
         <h3>${t("reconName")}</h3><p class="muted small">${t("reconDesc")}</p>
         <p class="tiny faint">${t("runs", R.judgings)}</p>
         <ol class="mini">${board.map((r, i) => `<li><span class="n">${i + 1}</span><span>${esc(entryLabel(r.entry))}</span><span class="v">${r.rating}</span>${seg((r.rating - lo + 20) / (top - lo + 20))}</li>`).join("")}</ol>
       </a>
-      <a class="frame card" href="#/small" style="padding:22px 24px">
+      <a class="frame card" href="#/small">
         <h3>${t("smallName")}</h3><p class="muted small">${t("smallDesc")}</p>
         ${D.small.pairings.length ? `<ol class="mini">${sortedPairings().map((p) => pairingLine(p)).join("")}</ol>` : `<p class="faint small">${t("pending")}</p>`}
-      </a>
-      <a class="frame card" href="#/archive" style="padding:22px 24px">
-        <h3>${t("archiveName")}</h3><p class="muted small">${t("archiveDesc")}</p>
       </a>
     </div>
   </section>`;
 }
 
-function charCard(x) {
+// Hero window: a showcase sprite as the text the model wrote (each key in its palette color) beside the rendered
+// pixels. Rows type in while the sprite reveals in step; startHero() cycles through the showcase.
+const heroItems = () => D.small.attempts.filter((a) => a.entry === "opusx" && a.grid);
+function spriteTextWindow() {
+  const items = heroItems();
+  if (!items.length) return "";
+  return `<div class="frame window st" id="st">${stFrame(items[0])}</div><p class="caption">${t("stCaption")}</p>`;
+}
+function stFrame(a) {
+  const g = a.grid;
+  const rows = g.rows.map((r, i) => `<div style="animation-delay:${i * 50}ms">${[...r].map((c) => (c === "." ? "<i>.</i>" : `<b style="color:${g.palette[c]}">${esc(c)}</b>`)).join("")}</div>`).join("");
+  const pal = Object.entries(g.palette).map(([k, hex]) => `<span><i style="background:${hex}"></i>${esc(k)}</span>`).join("");
+  return `<div class="bar"><i style="background:#ff004d"></i><i style="background:#ffec27"></i><i style="background:#00e436"></i><span>${esc(a.task)}.txt → ${esc(a.task)}.png</span></div>
+    <div class="st-body" style="--rows:${g.rows.length}">
+      <div><div class="st-grid">${rows}</div><div class="st-pal">${pal}</div></div>
+      <div class="st-out"><img class="spr" src="${a.img}" width="${a.w * 13}" height="${a.h * 13}" alt="${esc(taskName(a.task))}"><span>${esc(taskName(a.task))} · ${a.w}×${a.h}</span></div>
+    </div>`;
+}
+function startHero() {
+  clearInterval(heroTimer);
+  const items = heroItems(), el = $("#st");
+  if (!el || items.length < 2 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let i = 0;
+  heroTimer = setInterval(() => {
+    i = (i + 1) % items.length;
+    el.classList.add("fade");
+    setTimeout(() => { el.innerHTML = stFrame(items[i]); el.classList.remove("fade"); }, 250);
+  }, 4200);
+}
+
+const toggle = (name, options, current) => `<div class="toggle">${Object.entries(options).map(([k, label]) =>
+  `<button data-${name}="${k}" class="${k === current ? "on" : ""}" aria-pressed="${k === current}">${esc(label)}</button>`).join("")}</div>`;
+
+// 16×16 showcase as a sprite sheet: per model a row with the skill and one without, a column per brief.
+function showcase() {
+  const tasks = D.small.tasks.filter((x) => x.set === "showcase");
+  const has = (e) => D.small.attempts.some((a) => a.entry === e && tasks.some((x) => x.id === a.task));
+  const rows = SHEET.flatMap(([name, skill, plain]) => [[name, skill, true], [name, plain, false]]).filter(([, e]) => has(e));
+  if (!tasks.length || !rows.length) return "";
+  const cell = (x, e) => {
+    const a = D.small.attempts.find((q) => q.task === x.id && q.entry === e);
+    return `<div class="cell" data-tip="${esc(L(x.brief))}">${a ? `<img class="spr" src="${a.img}" width="${a.w * 5}" height="${a.h * 5}" alt="${esc(taskName(x.id))}">` : ""}</div>`;
+  };
+  // a's and b's wins over the showcase briefs only (the size pairings also count other 16×16 tasks)
+  const score = (a, b) => {
+    const won = (e, o) => D.small.attempts.filter((q) => q.entry === e && tasks.some((x) => x.id === q.task))
+      .flatMap((q) => q.judgings).filter((j) => j.opp === o && j.won).length;
+    const [wa, wb] = [won(a, b), won(b, a)];
+    return wa + wb ? `${wa}–${wb}` : null;
+  };
+  const vs = SHEET.map(([name, skill, plain]) => [name, score(skill, plain)]).filter(([, s]) => s);
+  const cross = score("opusx", "astra");
+  const line = [vs.length ? `${t("skillVs")}: ${vs.map(([n, s]) => `${n} <b>${s}</b>`).join(" · ")}` : "",
+    cross ? `Opus 5.5 vs GPT-6 Astra (${t("bothSkill")}): <b>${cross}</b>` : ""].filter(Boolean).join(" · ");
+  return `<section><p class="eyebrow">Grid route · 16×16</p><h2>${t("showTitle")}</h2><p class="note">${t("showLead")}</p>
+    <div class="frame sheet-wrap"><div class="sheet" style="--cols:${tasks.length}">
+      ${tasks.map((x) => `<span class="col">${esc(taskName(x.id))}</span>`).join("")}
+      ${rows.map(([name, e, skill]) => `<span class="row ${skill ? "" : "plain"}">${esc(name)} · ${skill ? "pixel-art" : esc(t("noSkill"))}</span>${tasks.map((x) => cell(x, e)).join("")}`).join("")}
+    </div></div>
+    ${line ? `<p class="small muted" style="margin-top:12px">${t("judged")} · ${line}</p>` : ""}</section>`;
+}
+
+function conceptSection() {
+  const items = D.small.tasks.filter((x) => x.set === "concept")
+    .map((x) => [x, D.small.attempts.find((a) => a.task === x.id && a.entry === "concept")]).filter(([, a]) => a && a.concept);
+  if (!items.length) return "";
+  return `<section><p class="eyebrow">Concept route · gpt-image</p><h2>${t("conceptTitle")}</h2><p class="note">${t("conceptLead")}</p>
+    <div class="concepts">${items.map(([x, a]) => `<figure class="frame concept" data-tip="${esc(L(x.brief))}">
+      <div class="concept-pair">
+        <div class="concept-img"><img src="${a.concept}" alt="${esc(t("conceptA"))}" loading="lazy"></div>
+        <div class="stage concept-px"><img class="spr" src="${a.img}" width="${a.w * 4}" height="${a.h * 4}" alt="${esc(taskName(x.id))}"></div>
+      </div>
+      <figcaption><b>${esc(taskName(x.id))}</b><span>${t("conceptA")} → ${t("conceptB")} · ${a.w}×${a.h}</span></figcaption></figure>`).join("")}</div></section>`;
+}
+
+function reconSection() {
+  const R = D.recon;
+  const judged = (e) => R.attempts.some((a) => a.entry === e && a.judgings.length);
+  const models = Object.keys(RECON).filter((m) => judged(RECON[m].true));
+  const entry = RECON[reconModel][reconSkill];
+  const row = R.leaderboard.find((r) => r.entry === entry);
+  const controls = [models.length > 1 ? toggle("rmodel", Object.fromEntries(models.map((m) => [m, RECON[m].name])), reconModel) : "",
+    judged(RECON[reconModel].false) ? toggle("rskill", { true: "pixel-art", false: t("noSkill") }, String(reconSkill)) : ""].join("");
+  return `<div class="section-head"><div><p class="eyebrow">Construct route · Eastward</p><h2>${t("reconTitle")}</h2><p class="note">${t("reconLead")}</p></div>
+    <div class="controls">${controls}</div></div>
+    <div class="cards">${R.tasks.map((x) => charCard(x, entry)).join("")}</div>
+    <p class="tiny faint" style="margin-top:14px">${row && row.vsAnchor.n ? `${esc(entryLabel(entry))} ${t("vsV12", row.vsAnchor.w, row.vsAnchor.n)} · ${t("rating")} ${row.rating} · ` : ""}<a href="#/leaderboard">${t("ctaBoard")} →</a></p>`;
+}
+
+// Original beside one drawing: the requested entry's if it has one, else the release's, else the best judged.
+function charCard(x, entry) {
   const R = D.recon;
   const atts = R.attempts.filter((a) => a.task === x.id && a.judgings.length);
-  const rel = atts.find((a) => D.entries[a.entry]?.release);
-  const shown = rel || atts.sort((a, b) => avgTotal(b) - avgTotal(a))[0];
+  const shown = atts.find((a) => a.entry === entry) || atts.find((a) => D.entries[a.entry]?.release)
+    || atts.sort((a, b) => avgTotal(b) - avgTotal(a))[0];
   return `<a class="frame card" href="#/characters/${x.id}">
     <div class="title">${esc(x.name)} ${x.heldout ? `<span class="tag alt">${t("heldout")}</span>` : ""}</div>
     <div class="pair" style="margin:10px">
@@ -177,7 +277,7 @@ function charCard(x) {
 }
 
 // Head-to-head line: the skill's entry first, the leader in bold, the bar showing the leader's share.
-const PAIR_ORDER = ["lite", "grid", "cons", "base"];
+const PAIR_ORDER = ["lite", "grid", "cons", "opusx", "astra", "concept", "base", "astraraw"];
 function pairingLine(p) {
   const [a, b] = [...p.entries].sort((x, y) => PAIR_ORDER.indexOf(x) - PAIR_ORDER.indexOf(y));
   const wa = p.wins[a] || 0, wb = p.wins[b] || 0;
@@ -219,7 +319,8 @@ function leaderboardPage() {
 }
 
 function historyChart(rows) {
-  const order = Object.keys(D.entries).filter((e) => rows.some((r) => r.entry === e));
+  const order = Object.keys(D.entries).filter((e) => !D.entries[e].baseline && rows.some((r) => r.entry === e));
+  const base = rows.filter((r) => D.entries[r.entry]?.baseline).sort((p, q) => q.rating - p.rating);
   const by = Object.fromEntries(rows.map((r) => [r.entry, r]));
   const W = 960, H = 300, ml = 48, mb = 40, mt = 14;
   const lo = Math.floor((Math.min(...rows.map((r) => r.lo)) - 20) / 50) * 50, hi = Math.ceil((Math.max(...rows.map((r) => r.hi)) + 20) / 50) * 50;
@@ -228,13 +329,18 @@ function historyChart(rows) {
   let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t("histTitle"))}">`;
   for (let v = lo; v <= hi; v += 50) s += `<line class="grid" x1="${ml}" x2="${W - 20}" y1="${y(v)}" y2="${y(v)}"/><text x="${ml - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
   s += `<line class="axis" x1="${ml}" x2="${W - 20}" y1="${H - mb}" y2="${H - mb}"/>`;
+  base.forEach((r, i) => {
+    s += `<g data-tip="${esc(`${entryLabel(r.entry)} · ${r.rating} (90 %: ${r.lo}–${r.hi}) · ${r.wins}/${r.games}`)}">
+      <line x1="${ml}" x2="${W - 20}" y1="${y(r.rating)}" y2="${y(r.rating)}" stroke="var(--bad)" stroke-width="2" stroke-dasharray="6 6"/>
+      <text x="${W - 22}" y="${y(r.rating) + (i % 2 ? 16 : -6)}" text-anchor="end" fill="var(--bad)">${esc(entryLabel(r.entry))}</text></g>`;
+  });
   order.forEach((e, i) => {
     const r = by[e], rel = D.entries[e]?.release, c = rel ? "var(--accent)" : "var(--sky)";
     s += `<g data-tip="${esc(`${entryLabel(e)} · ${r.rating} (90 %: ${r.lo}–${r.hi}) · ${r.wins}/${r.games}`)}">
       <rect x="${x(i) - 24}" y="${mt}" width="48" height="${H - mt - mb}" fill="transparent"/>
       <line x1="${x(i)}" x2="${x(i)}" y1="${y(r.lo)}" y2="${y(r.hi)}" stroke="var(--frame)" stroke-width="4"/>
       <rect x="${x(i) - 7}" y="${y(r.rating) - 7}" width="14" height="14" fill="${c}"/>
-      <text class="lbl" x="${x(i)}" y="${H - mb + 20}" text-anchor="middle">${esc(rel ? "1.0" : e)}</text></g>`;
+      <text class="lbl" x="${x(i)}" y="${H - mb + 20}" text-anchor="middle">${esc(rel ? (e === "astra" ? "1.0 Astra" : "1.0 Opus") : e)}</text></g>`;
   });
   return s + "</svg>";
 }
@@ -290,22 +396,28 @@ function attemptCard(a, isBest) {
 
 function smallPage() {
   const Sm = D.small;
-  const entries = Object.keys(D.sizeEntries);
-  const rows = Sm.tasks.map((x) => {
-    const cells = entries.map((e) => {
-      const a = Sm.attempts.find((q) => q.task === x.id && q.entry === e);
-      if (!a) return `<td></td>`;
-      const w = winsOf(a), n = a.judgings.length;
-      return `<td><div class="stage" style="width:${x.canvas[0] * 6 + 24}px;height:${x.canvas[1] * 6 + 32}px;border:2px solid var(--border)">${`<img class="spr" src="${a.img}" width="${a.w * 6}" height="${a.h * 6}" alt="">`}</div>
-        <div class="tiny ${n ? (w * 2 >= n ? "win" : "loss") : "faint"}">${n ? `${t("won")} ${w}/${n}` : t("noJudging")}</div></td>`;
+  const table = ([set, title]) => {
+    const tasks = Sm.tasks.filter((x) => x.set === set);
+    const entries = Object.keys(D.sizeEntries).filter((e) => Sm.attempts.some((a) => a.entry === e && tasks.some((x) => x.id === a.task)));
+    if (!tasks.length || !entries.length) return "";
+    const rows = tasks.map((x) => {
+      const k = x.canvas[0] > 32 ? 3 : 6;
+      const cells = entries.map((e) => {
+        const a = Sm.attempts.find((q) => q.task === x.id && q.entry === e);
+        if (!a) return `<td></td>`;
+        const w = winsOf(a), n = a.judgings.length;
+        return `<td><div class="stage" style="width:${x.canvas[0] * k + 24}px;height:${x.canvas[1] * k + 32}px;border:2px solid var(--border)"><img class="spr" src="${a.img}" width="${a.w * k}" height="${a.h * k}" alt=""></div>
+          <div class="tiny ${n ? (w * 2 >= n ? "win" : "loss") : "faint"}">${n ? `${t("won")} ${w}/${n}` : t("noJudging")}</div></td>`;
+      }).join("");
+      return `<tr><td style="min-width:220px;max-width:300px"><div style="font:10px/1.6 'Press Start 2P',monospace">${x.canvas[0]}×${x.canvas[1]}</div><div class="small muted">${esc(L(x.brief))}</div></td>${cells}</tr>`;
     }).join("");
-    return `<tr><td style="min-width:220px;max-width:300px"><div style="font:10px/1.6 'Press Start 2P',monospace">${x.canvas[0]}×${x.canvas[1]}</div><div class="small muted">${esc(L(x.brief))}</div></td>${cells}</tr>`;
-  }).join("");
+    return `<h3 class="display" style="font-size:13px;margin:32px 0 12px">${esc(title)}</h3><div class="frame" style="overflow-x:auto;padding:12px">
+      <table class="small-grid"><tr><th></th>${entries.map((e) => `<th>${esc(entryLabel(e))}</th>`).join("")}</tr>${rows}</table></div>`;
+  };
   return `<section style="margin-top:56px"><p class="eyebrow">${t("smallName")}</p><h1>${t("navSmall")}</h1><p class="note">${t("smallLead")}</p>
-    ${Sm.pairings.length ? `<div class="frame" style="padding:20px 24px;max-width:760px"><h3 class="display" style="font-size:13px">${t("smallPairs")}</h3><ol class="mini">${sortedPairings().map((p) => pairingLine(p)).join("")}</ol></div>` : `<p class="faint">${t("pending")}</p>`}
+    ${Sm.pairings.length ? `<div class="frame" style="padding:20px 24px;max-width:860px"><h3 class="display" style="font-size:13px">${t("smallPairs")}</h3><ol class="mini">${sortedPairings().map((p) => pairingLine(p)).join("")}</ol></div>` : `<p class="faint">${t("pending")}</p>`}
   </section>
-  <section><h2>${t("smallTasks")}</h2><div class="frame" style="overflow-x:auto;padding:12px">
-    <table class="small-grid"><tr><th></th>${entries.map((e) => `<th>${esc(entryLabel(e))}</th>`).join("")}</tr>${rows}</table></div></section>`;
+  <section><h2>${t("smallTasks")}</h2>${[["suite", t("setSuite")], ["showcase", t("setShowcase")], ["concept", t("setConcept")]].map(table).join("")}</section>`;
 }
 
 function archivePage() {
@@ -436,12 +548,17 @@ function render() {
   $("#foot").innerHTML = `<div><h4>${t("footA")}</h4>${ROUTES.map(([href, k]) => `<a href="${href}">${t(k)}</a>`).join("")}<a href="#/archive">${t("archiveName")}</a></div>
     <div style="max-width:520px"><h4>${t("footB")}</h4><a href="${REPO}">github.com/junyudev/pixel-art</a><p>${t("footNote")}</p></div>`;
   if (!arg) window.scrollTo(0, 0);
+  clearInterval(heroTimer);
+  if (!page) startHero();
 }
 
 $("#lang").addEventListener("click", () => { lang = lang === "zh" ? "en" : "zh"; html.lang = lang; localStorage.setItem("lang", lang); render(); });
 $("#theme").addEventListener("click", () => { html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark"; localStorage.setItem("theme", html.dataset.theme); render(); });
 window.addEventListener("hashchange", render);
 document.addEventListener("click", (e) => {
+  const m = e.target.closest("[data-rmodel]"), k = e.target.closest("[data-rskill]");
+  if (m) { reconModel = m.dataset.rmodel; $("#recon").innerHTML = reconSection(); return; }
+  if (k) { reconSkill = k.dataset.rskill === "true"; $("#recon").innerHTML = reconSection(); return; }
   const b = e.target.closest("[data-copy]");
   if (!b) return;
   navigator.clipboard.writeText(b.dataset.copy).then(() => {

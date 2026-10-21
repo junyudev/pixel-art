@@ -116,7 +116,7 @@ a.card:hover { transform: translate(-2px, -2px); color: inherit; }
 .win { color: var(--good); } .loss { color: var(--bad); }
 
 /* benchmark cards */
-.bench { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 28px; }
+.bench { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 28px; }
 .bench .frame { padding: 22px 24px; }
 .bench h3 { font: 15px/1.6 "Press Start 2P", "Fusion Pixel", monospace; margin-bottom: 6px; }
 ol.mini { list-style: none; padding: 0; margin: 16px 0 0; }
@@ -208,3 +208,49 @@ html[lang="zh"] .lead, html[lang="zh"] .brief { font-size: 18px; line-height: 1.
   background: var(--accent); color: var(--on-accent); }
 .install-note { margin: 0 0 4px; max-width: 560px; }
 html[lang="zh"] .install .copy { font-size: 12px; }
+
+/* hero: sprite text (each key in its palette color) beside the rendered pixels; rows type in as the sprite reveals */
+.st .st-body { display: grid; grid-template-columns: auto auto; justify-content: center; gap: 28px; padding: 24px 22px 20px; transition: opacity .25s; }
+.st.fade .st-body { opacity: 0; }
+.st-grid > div { display: flex; animation: rowin .15s both; }
+.st-grid b, .st-grid i { width: 13px; height: 13px; font: 600 12px/13px ui-monospace, "SF Mono", Menlo, monospace; text-align: center; font-style: normal; }
+.st-grid i { color: var(--faint); opacity: .5; }
+.st-pal { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 14px; max-width: 208px; font: 12px ui-monospace, "SF Mono", Menlo, monospace; color: var(--muted); }
+.st-pal span { display: inline-flex; align-items: center; gap: 5px; }
+.st-pal i { width: 10px; height: 10px; border: 1px solid var(--border); }
+.st-out { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.st-out img { background: repeating-conic-gradient(var(--canvas-a) 0 25%, var(--canvas-b) 0 50%) 0 0 / 26px 26px;
+  animation: reveal calc(var(--rows) * 50ms) steps(var(--rows)) both; }
+.st-out span { font-size: 14px; color: var(--muted); }
+@keyframes rowin { from { opacity: 0; } }
+@keyframes reveal { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
+@media (max-width: 560px) { .st .st-body { grid-template-columns: 1fr; justify-items: center; } }
+@media (prefers-reduced-motion: reduce) { .st-grid > div, .st-out img { animation: none; } }
+
+/* section heading with a control on the right */
+.section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 4px; }
+.controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.toggle { display: inline-flex; border: 4px solid var(--frame); background: var(--card-2); }
+.toggle button { font: 10px/1 "Press Start 2P", "Fusion Pixel", monospace; padding: 10px 12px; border: 0; background: none; color: var(--muted); cursor: pointer; }
+.toggle button.on { background: var(--accent); color: var(--on-accent); }
+
+/* 16×16 showcase as a sprite sheet: a row per model, a column per brief */
+.sheet-wrap { padding: 18px 20px 20px; overflow-x: auto; }
+.sheet { display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: 10px; min-width: calc(var(--cols) * 84px); }
+.sheet .col { font-size: 14px; color: var(--muted); text-align: center; white-space: nowrap; }
+.sheet .row { grid-column: 1 / -1; font: 10px/1 "Press Start 2P", "Fusion Pixel", monospace; color: var(--accent-ink); margin-top: 10px; }
+.sheet .row.plain { color: var(--muted); }
+.sheet .cell { aspect-ratio: 1; display: grid; place-items: center; background: var(--card-2); border: 2px solid var(--border); }
+
+/* concept route: gpt-image concept beside the recovered pixels */
+.concepts { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 22px; }
+.concept { margin: 0; }
+.concept-pair { display: grid; grid-template-columns: 1fr 1fr; }
+.concept-img { display: grid; place-items: center; background: var(--card-2); border-right: 4px solid var(--frame); }
+.concept-img img { width: 100%; height: 270px; object-fit: contain; display: block; }
+.concept-px { height: 300px; align-items: center; }
+.concept figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 14px; border-top: 4px solid var(--frame); }
+.concept figcaption b { font: 11px/1.6 "Press Start 2P", "Fusion Pixel", monospace; font-weight: 400; }
+.concept figcaption span { font-size: 14px; color: var(--muted); }
+@media (max-width: 520px) { .concepts { grid-template-columns: 1fr; } }
+html[lang="zh"] .toggle button, html[lang="zh"] .sheet .row, html[lang="zh"] .concept figcaption b { font-size: 12px; }
