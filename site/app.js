@@ -106,7 +106,7 @@ const taskName = (id) => (NAMES[id] ? NAMES[id][lang === "zh" ? 1 : 0] : id);
 const RECON = { opus: { name: "Opus 5.5", true: "v8R", false: "opusraw" }, astra: { name: "GPT-6 Astra", true: "astra", false: "astraraw" } };
 // 16×16 showcase rows: model, skill entry, no-skill entry.
 const SHEET = [["Opus 5.5", "opusx", "base"], ["GPT-6 Astra", "astra", "astraraw"]];
-let reconModel = "opus", reconSkill = true, heroTimer = null;
+let heroTimer = null;
 
 // ---------- helpers ----------
 const entryLabel = (e) => (D.entries[e] ? D.entries[e].label.replace("no skill", t("noSkill")) : D.sizeEntries[e] ? L(D.sizeEntries[e].label) : e);
@@ -154,7 +154,7 @@ function home() {
   </section>
   ${showcase()}
   ${conceptSection()}
-  <section id="recon">${reconSection()}</section>
+  ${reconSection()}
   <section>
     <h2>${t("benchTitle")}</h2><p class="note">${t("benchLead")}</p>
     <div class="bench">
@@ -201,8 +201,6 @@ function startHero() {
   }, 4200);
 }
 
-const toggle = (name, options, current) => `<div class="toggle">${Object.entries(options).map(([k, label]) =>
-  `<button data-${name}="${k}" class="${k === current ? "on" : ""}" aria-pressed="${k === current}">${esc(label)}</button>`).join("")}</div>`;
 
 // 16×16 showcase as a sprite sheet: per model a row with the skill and one without, a column per brief.
 function showcase() {
@@ -246,18 +244,28 @@ function conceptSection() {
       <figcaption><b>${esc(taskName(x.id))}</b><span>${t("conceptA")} → ${t("conceptB")} · ${a.w}×${a.h}</span></figcaption></figure>`).join("")}</div></section>`;
 }
 
+// Every reconstruction at once, at one pixel scale: a column per character; the original, then each model with
+// the skill and without.
 function reconSection() {
   const R = D.recon;
-  const judged = (e) => R.attempts.some((a) => a.entry === e && a.judgings.length);
-  const models = Object.keys(RECON).filter((m) => judged(RECON[m].true));
-  const entry = RECON[reconModel][reconSkill];
-  const row = R.leaderboard.find((r) => r.entry === entry);
-  const controls = [models.length > 1 ? toggle("rmodel", Object.fromEntries(models.map((m) => [m, RECON[m].name])), reconModel) : "",
-    judged(RECON[reconModel].false) ? toggle("rskill", { true: "pixel-art", false: t("noSkill") }, String(reconSkill)) : ""].join("");
-  return `<div class="section-head"><div><p class="eyebrow">Construct route · Eastward</p><h2>${t("reconTitle")}</h2><p class="note">${t("reconLead")}</p></div>
-    <div class="controls">${controls}</div></div>
-    <div class="cards">${R.tasks.map((x) => charCard(x, entry)).join("")}</div>
-    <p class="tiny faint" style="margin-top:14px">${row && row.vsAnchor.n ? `${esc(entryLabel(entry))} ${t("vsV12", row.vsAnchor.w, row.vsAnchor.n)} · ${t("rating")} ${row.rating} · ` : ""}<a href="#/leaderboard">${t("ctaBoard")} →</a></p>`;
+  const rows = [[t("original"), null], ...Object.values(RECON).flatMap((m) => [[m.name, m.true, true], [m.name, m.false, false]])]
+    .filter(([, e]) => !e || R.attempts.some((a) => a.entry === e));
+  const cell = (x, e) => {
+    const a = e ? R.attempts.find((q) => q.task === x.id && q.entry === e) : x.original;
+    const tip = `${x.name} · ${e ? entryLabel(e) + (a && a.judgings.length ? ` · ${avgTotal(a).toFixed(0)}${t("of70")}` : "") : t("original")}`;
+    return `<a class="cell ${e ? "" : "orig"}" href="#/characters/${x.id}" data-tip="${esc(tip)}">${a ? `<img class="spr" src="${a.img}" width="${a.w * 2}" height="${a.h * 2}" alt="${esc(tip)}">` : ""}</a>`;
+  };
+  const label = ([name, e, skill]) => {
+    if (!e) return `<span class="row orig">${esc(name)}</span>`;
+    const r = R.leaderboard.find((q) => q.entry === e);
+    return `<span class="row ${skill ? "" : "plain"}">${esc(name)} · ${skill ? "pixel-art" : esc(t("noSkill"))}${r && r.vsAnchor.n ? `<em>${t("vsV12", r.vsAnchor.w, r.vsAnchor.n)}</em>` : ""}</span>`;
+  };
+  return `<section><p class="eyebrow">Construct route · Eastward</p><h2>${t("reconTitle")}</h2><p class="note">${t("reconLead")}</p>
+    <div class="frame sheet-wrap"><div class="sheet recon" style="--cols:${R.tasks.length}">
+      ${R.tasks.map((x) => `<span class="col">${esc(x.name)}</span>`).join("")}
+      ${rows.map((r) => label(r) + R.tasks.map((x) => cell(x, r[1])).join("")).join("")}
+    </div></div>
+    <p class="tiny faint" style="margin-top:12px"><a href="#/characters">${t("allChars")}</a></p></section>`;
 }
 
 // Original beside one drawing: the requested entry's if it has one, else the release's, else the best judged.
@@ -556,9 +564,6 @@ $("#lang").addEventListener("click", () => { lang = lang === "zh" ? "en" : "zh";
 $("#theme").addEventListener("click", () => { html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark"; localStorage.setItem("theme", html.dataset.theme); render(); });
 window.addEventListener("hashchange", render);
 document.addEventListener("click", (e) => {
-  const m = e.target.closest("[data-rmodel]"), k = e.target.closest("[data-rskill]");
-  if (m) { reconModel = m.dataset.rmodel; $("#recon").innerHTML = reconSection(); return; }
-  if (k) { reconSkill = k.dataset.rskill === "true"; $("#recon").innerHTML = reconSection(); return; }
   const b = e.target.closest("[data-copy]");
   if (!b) return;
   navigator.clipboard.writeText(b.dataset.copy).then(() => {

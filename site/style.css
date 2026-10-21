@@ -227,13 +227,6 @@ html[lang="zh"] .install .copy { font-size: 12px; }
 @media (max-width: 560px) { .st .st-body { grid-template-columns: 1fr; justify-items: center; } }
 @media (prefers-reduced-motion: reduce) { .st-grid > div, .st-out img { animation: none; } }
 
-/* section heading with a control on the right */
-.section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 4px; }
-.controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
-.toggle { display: inline-flex; border: 4px solid var(--frame); background: var(--card-2); }
-.toggle button { font: 10px/1 "Press Start 2P", "Fusion Pixel", monospace; padding: 10px 12px; border: 0; background: none; color: var(--muted); cursor: pointer; }
-.toggle button.on { background: var(--accent); color: var(--on-accent); }
-
 /* 16×16 showcase as a sprite sheet: a row per model, a column per brief */
 .sheet-wrap { padding: 18px 20px 20px; overflow-x: auto; }
 .sheet { display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: 10px; min-width: calc(var(--cols) * 84px); }
@@ -241,6 +234,12 @@ html[lang="zh"] .install .copy { font-size: 12px; }
 .sheet .row { grid-column: 1 / -1; font: 10px/1 "Press Start 2P", "Fusion Pixel", monospace; color: var(--accent-ink); margin-top: 10px; }
 .sheet .row.plain { color: var(--muted); }
 .sheet .cell { aspect-ratio: 1; display: grid; place-items: center; background: var(--card-2); border: 2px solid var(--border); }
+.sheet .row em { font: 13px "Pixelify Sans", "Fusion Pixel", sans-serif; font-style: normal; color: var(--muted); margin-left: 12px; }
+.sheet .row.orig { color: var(--fg); }
+/* reconstruction sheet: every character on the game's sand ground, at 2× */
+.sheet.recon { min-width: calc(var(--cols) * 104px); }
+.sheet.recon .cell { aspect-ratio: auto; height: 144px; place-items: end center; padding-bottom: 6px; background: var(--stage); text-decoration: none; }
+.sheet.recon .cell.orig { outline: 3px solid var(--accent); outline-offset: -3px; }
 
 /* concept route: gpt-image concept beside the recovered pixels */
 .concepts { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 22px; }
@@ -253,4 +252,4 @@ html[lang="zh"] .install .copy { font-size: 12px; }
 .concept figcaption b { font: 11px/1.6 "Press Start 2P", "Fusion Pixel", monospace; font-weight: 400; }
 .concept figcaption span { font-size: 14px; color: var(--muted); }
 @media (max-width: 520px) { .concepts { grid-template-columns: 1fr; } }
-html[lang="zh"] .toggle button, html[lang="zh"] .sheet .row, html[lang="zh"] .concept figcaption b { font-size: 12px; }
+html[lang="zh"] .sheet .row, html[lang="zh"] .concept figcaption b { font-size: 12px; }
