@@ -118,8 +118,10 @@ const NAMES = {
   mechanic: ["Mechanic", "机械师"], fisherman: ["Old fisherman", "老渔夫"], fox: ["Fox ranger", "狐狸游侠"],
 };
 const taskName = (id) => (NAMES[id] ? NAMES[id][lang === "zh" ? 1 : 0] : id);
-// Reconstruction entries by model and skill (true = pixel-art 1.0, false = the no-skill baseline).
-const RELEASE_RECON = "v8R";
+// Reconstruction entries by model and skill (true = the latest pixel-art run, false = the no-skill baseline).
+const RELEASE_RECON = "v8F";
+// Skill version of each release run, for chart labels and tags.
+const VERSION = { v8F: "1.1", v8R: "1.0", astra: "1.0" };
 const RECON = { opus: { name: "Opus 5.5", true: RELEASE_RECON, false: "opusraw" }, astra: { name: "GPT-6 Astra", true: "astra", false: "astraraw" } };
 // 16×16 showcase rows: model, skill entry, no-skill entry.
 const SHEET = [["Opus 5.5", "opusx", "base"], ["GPT-6 Astra", "astra", "astraraw"]];
@@ -398,7 +400,7 @@ function historyChart(rows) {
       <rect x="${x(i) - 24}" y="${mt}" width="48" height="${H - mt - mb}" fill="transparent"/>
       <line x1="${x(i)}" x2="${x(i)}" y1="${y(r.lo)}" y2="${y(r.hi)}" stroke="var(--frame)" stroke-width="4"/>
       <rect x="${x(i) - 7}" y="${y(r.rating) - 7}" width="14" height="14" fill="${c}"/>
-      <text class="lbl" x="${x(i)}" y="${H - mb + 20}" text-anchor="middle">${esc(rel ? (e === "astra" ? "1.0 Astra" : "1.0 Opus") : e)}</text></g>`;
+      <text class="lbl" x="${x(i)}" y="${H - mb + 20}" text-anchor="middle">${esc(VERSION[e] ? `${VERSION[e]} ${e === "astra" ? "Astra" : "Opus"}` : e)}</text></g>`;
   });
   return s + "</svg>";
 }
@@ -444,7 +446,7 @@ function attemptCard(a, isBest) {
   const notes = [...new Set(a.judgings.flatMap((j) => j.notes))];
   const vs = [...new Set(a.judgings.map((j) => j.opp))].map(entryLabel).join(", ");
   return `<div class="frame card attempt">
-    <div class="title">${esc(entryLabel(a.entry))} ${isBest ? `<span class="tag">${t("best")}</span>` : ""}${D.entries[a.entry]?.release ? `<span class="tag alt">1.0</span>` : ""}</div>
+    <div class="title">${esc(entryLabel(a.entry))} ${isBest ? `<span class="tag">${t("best")}</span>` : ""}${VERSION[a.entry] ? `<span class="tag alt">${VERSION[a.entry]}</span>` : ""}</div>
     <div class="stage sand" style="height:230px">${spr(a, 200, entryLabel(a.entry))}</div>
     <div class="scorebar">${tot == null ? `<span class="faint">${t("noJudging")}</span>` : `<span class="num" style="font:12px 'Press Start 2P',monospace">${tot.toFixed(0)}${t("of70")}</span><span class="${w * 2 >= n ? "win" : "loss"}">${t("won")} ${w}/${n}</span>`}</div>
     <div class="meta">${vs ? `vs ${esc(vs)}` : ""}${a.cost ? `<br>${t("cost", a.cost)}` : ""}</div>

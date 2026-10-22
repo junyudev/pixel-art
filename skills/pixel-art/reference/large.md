@@ -25,14 +25,13 @@ Division of labour: **code owns consistency** (rasterizing, one light, clean ink
 
 ## The camera: in front of the character and above, looking down
 
-**This is the most important rule.** Don't draw a front elevation. Think in 3D volumes seen from in front and above:
-- **Volumes:** the torso, limbs and skirt are cylinders or cones, and the head is an egg.
+**This is the most important rule.** Don't draw a front elevation. The camera shows in the shapes, not in the shading:
 - **Every horizontal ring around a form is the near half of an ellipse.** That covers skirt, coat and apron hems, belts and waistbands, cuffs, collars and necklines, hat bands and brims, boot tops, and bucket rims. The ring **dips toward the viewer in the middle and rises at the sides.**
   - Sag is about 15 % of the ring's width: 1 px for 4–7 px rings, 2 px for 8–14, and 3 px for 15+.
   - Use `arc_pts()` and `band()`. A flat straight hem is the signature front-view mistake.
 - **Tops show, bottoms hide.** Show the crown of the head or hat, the top plane of the shoulders, the inside of a bucket (an ellipse), and the tops of the shoes with the toes turned slightly out. Hide the soles.
 - **Skirt and coat sides** flare and curve, and their bottom corners round up.
-- **Shading follows the volume.** Each cylinder has one shadow side. Shadows of bands and hems follow their arcs.
+- **Flat cel shading, not relief.** Each material is a base and one shadow, about 2 tones (Eastward adults: median 2.2 tones per material; the 10 test characters' originals: 1.9, none above 2.4). Every form gets **one big shadow shape**: on the side away from the light, under the head, under the arms and between the legs. No rolled edges, no rim of light or shade around each part, no gradient. A test release that shaded every part round (2.75 tones per material) looked like carved relief next to the flat originals; the volume should come from the arcs and the tops, not from shading.
 - **Guardrail:** `flat_h` must stay ≤ 0.33. It measures the share of interior horizontal boundaries that are straight runs of 6 px or more. The reference median is 0.28; every test sprite drawn without this rule scored 0.34–0.57.
 
 Setup is in SKILL.md. Run tools from the skill folder (they add it to `sys.path`), or copy `kit/` and `tools/` into your project.
@@ -58,7 +57,7 @@ Setup is in SKILL.md. Run tools from the skill folder (they add it to `sys.path`
    - **Brief, 4 lines:** silhouette hook, one caricature feature, 3–5 materials plus one accent, one story detail. Add one line on **how the age reads**, using the marks from the anatomy grammar. An adult with a round face, a closed-eye grin and no marks reads as a child.
    - **Palette: write it now**, within the card's budget (Eastward: ≤ 16 including ink).
      - If `styles/<game>_palette.json` exists, start from its shared colors: ink, skin and skin shadow, shadow brown, cream. Add only the character's own colors, 3–6 of them.
-     - Most materials get base + shadow only. Set `hi == base` in their ramp. Give a highlight to 1–3 materials at most.
+     - Every material gets base + shadow only: set `hi == base` in its ramp, and keep `deep` for contact shadows and fold lines. Give a highlight to 1–2 materials at most (hair, metal or glass). Aim for about 12 colors in total (the references' median).
      - Plan values so dark materials don't all land in one horizontal band (mud).
 4. **Gesture and proportions first.** Before any shape, write joint coordinates in a comment: head, shoulders, elbows, wrists, hips, knees, ankles.
    - **Pixel numbers in this step are for Eastward-scale figures** (adults about 52 px tall on a 48×64 canvas). Scale them to your figure height; keep the ratios.
@@ -75,7 +74,7 @@ Setup is in SKILL.md. Run tools from the skill folder (they add it to `sys.path`
    - Shoulders and hips counter-tilt by 1 px.
    - **Give the pose attitude.** The two arms do different things: one hand on the hip, one arm bent, or a prop held out. Never let both arms hang straight and symmetric.
      - A rule that pulled both arms in made a test fishmonger stiff and childlike, and judges scored it 18 points lower.
-     - Arms otherwise sit close to the body and overlap the torso edge.
+     - **Arms are their own shapes, not part of the torso.** Along most of the arm, an ink line or a 1–2 px gap separates it from the body, and the hands hang clear of the hips. A held prop (lantern, bag, tool) is held out from the body on a bent arm, as Eastward's Arthur holds his lantern. Arms pressed flat against the torso read as a stiff block. If the brief or reference hides the arms (a bell-shaped smock, a cape, a long mane), keep them hidden; don't push hands out of that silhouette.
    - **Width:** adults' torso is ≤ 32 px, and ≤ 40 px including a flared elbow or a held prop. Kids are ≤ 26 px (reference medians: 27 and 24).
    - **Kid height:** 35–40 px.
    - **Adult, not child:**
@@ -106,6 +105,7 @@ Setup is in SKILL.md. Run tools from the skill folder (they add it to `sys.path`
      - `tilt`, the way its plane faces: shoulders and hair top `(0,-0.3..-0.4)`, right-side pieces `(+0.2..0.35, …)`;
      - `volume`: 0 for flat panels, 1 for round forms;
      - `cast`: head `(1,2)`, arms `(1,1)`, fringe `(0,1)`.
+   - Keep `volume` at 0 for clothes and bodies (flat panels); the light's silhouette gradient already gives the big shadow side. Use a little `volume` (≤ 0.4) only on the head and round props.
    - Check the per-region stats. A front-facing region with more than 60 % shade has the wrong tilt.
 7. **Draw the detail at full size. Most loops go here.**
    - **Face and hands as windows.** `render_figure.py fig.py out/ name --window x y w h` prints that area as text with a ruler.
@@ -141,7 +141,7 @@ Setup is in SKILL.md. Run tools from the skill folder (they add it to `sys.path`
      - Keep each block ≤ 16×16, and do one feature area at a time.
    - **Then smaller marks** with `px` and `line` ops: hair clumps, folds, stains, buckles, glints, and line breaks where a contour should open.
    - **Clothes are layered shapes, not slabs.**
-     - Every large garment gets 2–4 tapered fold or shadow shapes (2–6 px) that start at a joint, strap or waist.
+     - Every large garment gets 2–4 tapered fold shapes (2–6 px) that start at a joint, strap or waist, drawn in the garment's shadow or deep tone, never as a new in-between tone.
      - Add separate bands for cuffs, collar, hem and belt.
      - Gloss is one or two strokes.
      - Big garments use the shared muted cloth colors. A saturated orange or lavender garment pops out of the scene.
@@ -178,10 +178,10 @@ Setup is in SKILL.md. Run tools from the skill folder (they add it to `sys.path`
 
 - [ ] **Silhouette.** As a solid fill, are the gesture, the weight leg and the asymmetry visible? Recognizable at 1×?
 - [ ] **Seams.** Is any part outlined on its own? There should be no ring at shoulders, hips or wrists inside one form.
-- [ ] **Light.** One light across the figure: a big shadow side, no pillow rims on every part, no speckles?
+- [ ] **Light.** Flat cel shading: one big shadow shape per form, about 2 tones per material, no rolled edges or relief, no speckles? `tones` ≤ 2.67?
 - [ ] **Detail density.** Do the face, hands and clothes have drawn marks like the references, or are they blank fills?
 - [ ] **Economy.** Colors within budget, about 2 tones per material, and no `render_figure` warnings?
-- [ ] **Proportions.** Height, width and head share inside the card's range? Do the legs and feet show a stance? Do the arms stay close to the body?
+- [ ] **Proportions.** Height, width and head share inside the card's range? Do the legs and feet show a stance? Do the arms that show read as arms, set off from the torso by a line or a gap, with the hands clear of the body?
 - [ ] **Wrapping.** Do clothes overlap and curve around the body, or are they flat panels with ruler edges?
 - [ ] **Misreads.** At 1×, could the mouth read as a mustache, hair as headphones, or the prop as a tool?
 - [ ] **Heads row.** On the critique sheet, are your features as big, dark and specific as the references'? Does the head have ears or bumps? Is the face carved with a shadow side, a socket band, a nose underside and a chin shadow?

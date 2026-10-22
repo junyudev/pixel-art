@@ -22,7 +22,7 @@ The skill needs Python with `pillow`, `numpy` and `scipy`. It works with Claude 
 
 Agents redraw 10 real Eastward (风来之国) characters from a 3–5 sentence brief, never seeing the original. Two blind judges compare each drawing with the original on 7 criteria; a Bradley–Terry fit over every judging ranks the entries. A second suite covers 16×16 and 32×32 sprites with no original.
 
-- pixel-art 1.0 rates first of 11 entries and beat the previous best version's drawings 15–5.
+- pixel-art 1.0 beat the previous best version's drawings 15–5. 1.1 shades flat like the game and sets the arms off the body, at the same likeness (13–7 against those drawings, 9–11 against 1.0).
 - Its grid route beat plain Opus 9–1 at 16×16.
 
 Everything is on [pixel.jyu.app](https://pixel.jyu.app): every drawing next to its original, the judges' notes, ratings with intervals, and cost per drawing. `site/` is the static build of that site.

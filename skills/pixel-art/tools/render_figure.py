@@ -25,10 +25,10 @@ from style_stats import fingerprint  # noqa: E402
 GUARD = {
     "small": {"dark": (0.18, 0.31), "speckle": (0.05, 0.07), "cluster": (4.3, 6.5), "edge_ink": (0.58, 0.96),
               "straight": (0.05, 0.27), "w": (17, 28), "head_w": (0.0, 0.92), "checker": (0.0, 0.015),
-              "flat_h": (0.0, 0.32)},
+              "flat_h": (0.0, 0.32), "tones": (1.5, 2.67)},
     "adult": {"dark": (0.17, 0.32), "speckle": (0.03, 0.08), "cluster": (5.1, 7.8), "edge_ink": (0.72, 0.99),
               "straight": (0.09, 0.32), "w": (23, 46), "shoulder_w": (0.56, 1.0), "feet_w": (0.0, 0.55),
-              "checker": (0.0, 0.015), "flat_h": (0.0, 0.33)},
+              "checker": (0.0, 0.015), "flat_h": (0.0, 0.33), "tones": (1.5, 2.67)},
 }
 WHY = {
     ("speckle", "hi"): "too many single pixels: merge them into shapes",
@@ -51,6 +51,8 @@ WHY = {
     ("checker", "hi"): "checkerboard/woven texture (rope, beard, trousers): make each texture one or two shapes",
     ("checker", "lo"): "",
     ("feet_w", "hi"): "barrel figure: seen from slightly above, legs taper to small feet close together",
+    ("tones", "hi"): "too many tones per material (relief look): base + one big shadow shape, no rolled edges",
+    ("tones", "lo"): "almost no shading: give each form one shadow shape on the side away from the light",
 }
 
 
