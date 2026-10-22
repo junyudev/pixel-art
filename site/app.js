@@ -14,8 +14,14 @@ const S = {
     getSkill: "Get the skill", navBoard: "Leaderboard", navChars: "Characters", navSmall: "Small sprites", navMethod: "Method",
     navSkill: "Skill", eyebrowHome: "Agent skill · benchmark",
     heroA: "Pixel art, ", heroB: "written", heroC: " pixel by pixel.",
-    heroLead: "pixel-art is an agent skill that draws sprites as true pixel grids, from 16×16 icons to 64×64 characters. Pixel Bench measures it with blind paired judging, including against real Eastward sprites.",
+    heroLead: "pixel-art is an agent skill for pixel-perfect sprites, from 16×16 icons to 64×64 characters: every pixel on the grid, written out as text. Pixel Bench measures it with blind paired judging, including against real Eastward sprites.",
     stCaption: "The grid route: a palette, one character per pixel, rendered as is.",
+    routesTitle: "Three routes, picked by canvas size",
+    homeRoutes: [
+      ["up to 32 px", "Grid", "Writes a palette and one character per pixel, renders it, and fixes what doesn't read at 1×.", "grid"],
+      ["over 32 px", "Construct", "Code builds the figure and one light; the agent hand-draws face, hands and details in small windows.", "construct"],
+      ["32 px and up, optional", "Concept", "Codex gpt-image designs the sprite, a converter recovers the true pixels, the agent cleans up.", "concept"],
+    ],
     showTitle: "16×16, written as text", showLead: "The same 12 briefs for each model, with the skill and without. With it, the agent writes the grid, renders it and fixes what doesn't read at 1×. All at extra-high effort.",
     noSkill: "no skill", judged: "Blind judging", skillVs: "pixel-art vs no skill", bothSkill: "both with pixel-art",
     conceptTitle: "64×64, from a gpt-image concept", conceptLead: "The concept route: Codex image generation designs the character, a converter recovers the true pixels, and the agent picks, edits and cleans up.",
@@ -44,7 +50,7 @@ const S = {
     archiveLead: "The first rounds used invented briefs and no original: two versions side by side, judged with reference sprites for style. v1 and v3 predate the judging; v10 was stopped before it.",
     methodTitle: "Method", skillTitle: "The pixel-art skill", copy: "Copy", copied: "Copied",
     installNote: "Works with Claude Code, Codex, Cursor and other agents. The skill needs Python with pillow, numpy and scipy.",
-    skillLead: "A Claude Code skill that draws pixel art as real PNGs at any size. It picks a route by canvas size: the construct route is on the leaderboard, the grid route on the small-sprite suite.",
+    skillLead: "An agent skill that draws pixel-perfect sprites at any size: one cell per pixel, hard edges, a named palette. It delivers sprite text (a palette plus one character per pixel) and the 1× PNG rendered from it, and picks a route by canvas size.",
     routes: "Three routes", install: "Install", use: "Use it", results: "How it scores",
     download: "Download zip", github: "GitHub",
     footA: "Explore", footB: "About", footNote: "Code under the MIT license. Eastward © Pixpil; original sprites are shown with permission. Fonts: Press Start 2P, Pixelify Sans, Fusion Pixel (SIL OFL).",
@@ -54,8 +60,14 @@ const S = {
     getSkill: "获取技能", navBoard: "排行榜", navChars: "角色", navSmall: "小尺寸", navMethod: "方法", navSkill: "技能",
     eyebrowHome: "agent 技能 · 基准测试",
     heroA: "像素画，", heroB: "一格一格", heroC: "写出来。",
-    heroLead: "pixel-art 是一个 agent 技能，把精灵图当作真正的像素网格来画，从 16×16 图标到 64×64 角色。Pixel Bench 用成对盲评来衡量它，包括与《风来之国》真实精灵图对照。",
+    heroLead: "pixel-art 是一个画完美像素精灵图的 agent 技能，从 16×16 图标到 64×64 角色：每个像素都落在网格上，以文本写出。Pixel Bench 用成对盲评来衡量它，包括与《风来之国》真实精灵图对照。",
     stCaption: "字符矩阵路线：一份调色板，每个像素一个字符，原样渲染。",
+    routesTitle: "三条路线，按画布尺寸自动选择",
+    homeRoutes: [
+      ["32 px 及以下", "字符矩阵", "写出调色板和每像素一个字符，渲染后在 1× 下检查、修改。", "grid"],
+      ["32 px 以上", "构建", "代码搭出人物和统一光照，agent 在小窗口里手画脸、手和细节。", "construct"],
+      ["32 px 及以上，可选", "生图", "Codex 的 gpt-image 设计角色，转换器还原真正的像素，agent 收尾修整。", "concept"],
+    ],
     showTitle: "16×16，直接写成文本", showLead: "同样 12 道题，每个模型各画两次：用技能和不用技能。用技能时，agent 写出网格、渲染、在 1× 下修改看不清的地方。全部使用 extra-high effort。",
     noSkill: "不用技能", judged: "盲评", skillVs: "用技能 vs 不用", bothSkill: "都用技能",
     conceptTitle: "64×64，从 gpt-image 概念图出发", conceptLead: "生图路线：Codex 的 gpt-image 设计角色，转换器还原真正的像素，agent 负责挑选、修改和清理。",
@@ -84,7 +96,7 @@ const S = {
     archiveLead: "最早几轮用的是自拟题目、没有原图：两个版本并排，评审参照风格参考图打分。v1、v3 早于评审流程，v10 在评审前被叫停。",
     methodTitle: "方法", skillTitle: "pixel-art 技能", copy: "复制", copied: "已复制",
     installNote: "支持 Claude Code、Codex、Cursor 等 agent。技能需要装有 pillow、numpy、scipy 的 Python。",
-    skillLead: "一个 Claude Code 技能，能画出任意尺寸、真正逐像素的 PNG 像素图。它按画布大小选择路线：构建路线的成绩在排行榜上，字符矩阵路线的成绩在小尺寸测试里。",
+    skillLead: "一个画完美像素精灵图的 agent 技能，任意尺寸：一格一个像素、硬边、调色板里的每个颜色都有名字。交付字符矩阵文本（调色板加每像素一个字符）和由它渲染出的 1× PNG，并按画布大小选择路线。",
     routes: "三条路线", install: "安装", use: "使用", results: "测试成绩",
     download: "下载 zip", github: "GitHub",
     footA: "浏览", footB: "关于", footNote: "代码采用 MIT 许可证。《风来之国》© Pixpil，原图经许可展示。字体：Press Start 2P、Pixelify Sans、Fusion Pixel（SIL OFL）。",
@@ -103,7 +115,8 @@ const NAMES = {
 };
 const taskName = (id) => (NAMES[id] ? NAMES[id][lang === "zh" ? 1 : 0] : id);
 // Reconstruction entries by model and skill (true = pixel-art 1.0, false = the no-skill baseline).
-const RECON = { opus: { name: "Opus 5.5", true: "v8R", false: "opusraw" }, astra: { name: "GPT-6 Astra", true: "astra", false: "astraraw" } };
+const RELEASE_RECON = "v8R";
+const RECON = { opus: { name: "Opus 5.5", true: RELEASE_RECON, false: "opusraw" }, astra: { name: "GPT-6 Astra", true: "astra", false: "astraraw" } };
 // 16×16 showcase rows: model, skill entry, no-skill entry.
 const SHEET = [["Opus 5.5", "opusx", "base"], ["GPT-6 Astra", "astra", "astraraw"]];
 let heroTimer = null;
@@ -152,9 +165,10 @@ function home() {
     </div>
     <div>${spriteTextWindow()}</div>
   </section>
+  ${routeStrip()}
   ${showcase()}
-  ${conceptSection()}
   ${reconSection()}
+  ${conceptSection()}
   <section>
     <h2>${t("benchTitle")}</h2><p class="note">${t("benchLead")}</p>
     <div class="bench">
@@ -202,6 +216,22 @@ function startHero() {
 }
 
 
+// The skill's three routes under the hero, each with real output; a card scrolls to its results below.
+function routeStrip() {
+  const att = (entry, task) => [...D.recon.attempts, ...D.small.attempts].find((a) => a.entry === entry && a.task === task);
+  const img = (a, k) => (a ? `<img class="spr" src="${a.img}" width="${a.w * k}" height="${a.h * k}" alt="">` : "");
+  const fox = att("concept", "fox");
+  const art = {
+    grid: `<div class="rt-art">${["apple", "key", "frog", "witch"].map((x) => img(att("opusx", x), 4)).join("")}</div>`,
+    construct: `<div class="rt-art sand">${["fumi", "arthur", "selma"].map((x) => img(att(RELEASE_RECON, x), 2)).join("")}</div>`,
+    concept: fox ? `<div class="rt-art"><img src="${fox.concept}" height="128" alt=""><span class="faint">→</span>${img(fox, 2)}</div>` : "",
+  };
+  return `<section class="routes-home"><h2>${t("routesTitle")}</h2>
+    <div class="rt-grid">${t("homeRoutes").map(([size, name, desc, id]) => `<a class="frame rt" href="#${id}" data-goto="${id}">
+      <span class="rt-size">${esc(size)}</span><span class="rt-name">${esc(name)} <span class="faint">↓</span></span>
+      <span class="muted small">${esc(desc)}</span>${art[id]}</a>`).join("")}</div></section>`;
+}
+
 // 16×16 showcase as a sprite sheet: per model a row with the skill and one without, a column per brief.
 function showcase() {
   const tasks = D.small.tasks.filter((x) => x.set === "showcase");
@@ -223,7 +253,7 @@ function showcase() {
   const cross = score("opusx", "astra");
   const line = [vs.length ? `${t("skillVs")}: ${vs.map(([n, s]) => `${n} <b>${s}</b>`).join(" · ")}` : "",
     cross ? `Opus 5.5 vs GPT-6 Astra (${t("bothSkill")}): <b>${cross}</b>` : ""].filter(Boolean).join(" · ");
-  return `<section><p class="eyebrow">Grid route · 16×16</p><h2>${t("showTitle")}</h2><p class="note">${t("showLead")}</p>
+  return `<section id="grid"><p class="eyebrow">Grid route · 16×16</p><h2>${t("showTitle")}</h2><p class="note">${t("showLead")}</p>
     <div class="frame sheet-wrap"><div class="sheet" style="--cols:${tasks.length}">
       ${tasks.map((x) => `<span class="col">${esc(taskName(x.id))}</span>`).join("")}
       ${rows.map(([name, e, skill]) => `<span class="row ${skill ? "" : "plain"}">${esc(name)} · ${skill ? "pixel-art" : esc(t("noSkill"))}</span>${tasks.map((x) => cell(x, e)).join("")}`).join("")}
@@ -235,7 +265,7 @@ function conceptSection() {
   const items = D.small.tasks.filter((x) => x.set === "concept")
     .map((x) => [x, D.small.attempts.find((a) => a.task === x.id && a.entry === "concept")]).filter(([, a]) => a && a.concept);
   if (!items.length) return "";
-  return `<section><p class="eyebrow">Concept route · gpt-image</p><h2>${t("conceptTitle")}</h2><p class="note">${t("conceptLead")}</p>
+  return `<section id="concept"><p class="eyebrow">Concept route · gpt-image</p><h2>${t("conceptTitle")}</h2><p class="note">${t("conceptLead")}</p>
     <div class="concepts">${items.map(([x, a]) => `<figure class="frame concept" data-tip="${esc(L(x.brief))}">
       <div class="concept-pair">
         <div class="concept-img"><img src="${a.concept}" alt="${esc(t("conceptA"))}" loading="lazy"></div>
@@ -260,7 +290,7 @@ function reconSection() {
     const r = R.leaderboard.find((q) => q.entry === e);
     return `<span class="row ${skill ? "" : "plain"}">${esc(name)} · ${skill ? "pixel-art" : esc(t("noSkill"))}${r && r.vsAnchor.n ? `<em>${t("vsV12", r.vsAnchor.w, r.vsAnchor.n)}</em>` : ""}</span>`;
   };
-  return `<section><p class="eyebrow">Construct route · Eastward</p><h2>${t("reconTitle")}</h2><p class="note">${t("reconLead")}</p>
+  return `<section id="construct"><p class="eyebrow">Construct route · Eastward</p><h2>${t("reconTitle")}</h2><p class="note">${t("reconLead")}</p>
     <div class="frame sheet-wrap"><div class="sheet recon" style="--cols:${R.tasks.length}">
       ${R.tasks.map((x) => `<span class="col">${esc(x.name)}</span>`).join("")}
       ${rows.map((r) => label(r) + R.tasks.map((x) => cell(x, r[1])).join("")).join("")}
@@ -564,6 +594,8 @@ $("#lang").addEventListener("click", () => { lang = lang === "zh" ? "en" : "zh";
 $("#theme").addEventListener("click", () => { html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark"; localStorage.setItem("theme", html.dataset.theme); render(); });
 window.addEventListener("hashchange", render);
 document.addEventListener("click", (e) => {
+  const g = e.target.closest("[data-goto]");
+  if (g) { e.preventDefault(); document.getElementById(g.dataset.goto)?.scrollIntoView({ behavior: "smooth" }); return; }
   const b = e.target.closest("[data-copy]");
   if (!b) return;
   navigator.clipboard.writeText(b.dataset.copy).then(() => {

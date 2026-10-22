@@ -1,6 +1,6 @@
 ---
 name: pixel-art
-description: Draws pixel-art sprites (characters, items, icons, props) as real PNGs at any size, from 16×16 icons to 64×64 characters, matched to a game's style. Small sprites are written directly as a palette plus a character grid; larger ones are built with a construction kit plus hand-drawn detail windows; an image model (Codex gpt-image) can optionally supply the design. Use when asked to draw, design or fix pixel art or game sprites, or to match a game's sprite style. Ships a measured style card for Eastward (风来之国).
+description: Draws pixel-perfect sprites (characters, items, icons, props) at any size, from 16×16 icons to 64×64 characters, matched to a game's style - every pixel on the exact canvas, hard-edged, from a named palette - and delivers them as sprite text (a palette plus one character per pixel) with the 1× PNG rendered from it. Small sprites are written directly as that text; larger ones are built with a construction kit plus hand-drawn detail windows; an image model (Codex gpt-image) can optionally supply the design. Use when asked to draw, design or fix pixel art or game sprites, or to match a game's sprite style. Ships a measured style card for Eastward (风来之国).
 ---
 
 # Pixel art
@@ -29,8 +29,11 @@ Pick the route by canvas size, then read only that route's file.
 - **Reference sprites from the user:** study them as text (`tools/refs.py text sprite.png` prints a sprite with a ruler and its palette) and match their size, outline, color count and shading.
 - **Neither:** before drawing, state your choices in one line: view (side, front, top-down 3/4), outline (dark tinted, colored, none), color budget and light direction (default: upper left).
 
-## Deliverable
+## Deliverable: pixel-perfect
 
-- `final_1x.png`: RGBA at the exact canvas size, transparent background, no ground shadow unless asked. Never upscale or resample it.
-- Keep the source next to it (the sprite text or the figure module), so the sprite stays editable.
-- Show the user a scaled preview (the tools write one) along with the 1× file.
+Every route ends with the same promise:
+- **One cell per pixel** at the exact canvas size. Never upscale, resample, blur or anti-alias.
+- **Hard edges:** each pixel is fully opaque or fully transparent. No soft shadows, glows or ground shadow unless asked.
+- **A named palette:** every color is a palette entry.
+
+**Sprite text is the source of truth:** `NAME.txt`, the palette plus one character per pixel. The grid route writes it directly; the construct and concept routes finish with `python -I tools/grid.py text out/NAME_1x.png > NAME.txt`. Then `python -I tools/grid.py render NAME.txt out/ --size WxH` renders `out/NAME_1x.png` from it and flags anything that breaks the promise. Deliver both, keep the figure module or concept beside them, and show the user the scaled view along with the 1× file.

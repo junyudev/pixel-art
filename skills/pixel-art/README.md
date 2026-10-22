@@ -1,6 +1,6 @@
 # pixel-art
 
-An agent skill that draws pixel-art sprites as real PNGs at any size, from 16×16 icons to 64×64 characters. It picks a route by canvas size:
+An agent skill that draws pixel-perfect sprites at any size, from 16×16 icons to 64×64 characters: every pixel on the exact canvas, hard-edged, from a named palette. It delivers sprite text (a palette plus one character per pixel) and the 1× PNG rendered from it, and picks a route by canvas size:
 
 | Canvas | Route | How |
 |---|---|---|

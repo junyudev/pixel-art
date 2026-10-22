@@ -10,7 +10,7 @@ At this size the whole sprite fits in one view, and you already draw it well. Wr
    - It lists isolated pixels (keep them only if they are deliberate eyes, glints or sparkles) and unused palette keys.
 3. **Look at `out/NAME_view.png`.** Judge the 1× and 2× thumbnails and the silhouette first, because that is how the sprite is seen. Use the big grid view to find the pixels to change. Ask: does it read instantly at 1×, is every item in the request there, is the light consistent?
 4. **Fix and re-render** until it reads at 1×. Two or three loops are usually enough.
-5. **Deliver** `out/NAME_1x.png` (exact canvas, transparent background) with `NAME.txt` beside it.
+5. **Deliver** `NAME.txt` and the `out/NAME_1x.png` rendered from it (exact canvas, transparent background).
 
 ## Sprite text format
 

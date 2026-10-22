@@ -1,4 +1,5 @@
-"""Sprite text <-> PNG, for small sprites drawn directly as a character grid.
+"""Sprite text <-> PNG. Sprite text is the pixel-perfect source of every sprite: small ones are drawn in it
+directly, larger ones are converted to it at the end.
 
 Sprite text format (one file):
     o = #2b1b2e   any note after the color is ignored
@@ -14,7 +15,8 @@ Palette lines come before the `---` line: one character key, `=`, a hex color (#
       plus 1× and 2× on light and dark ground and a silhouette); prints size, colors and warnings.
       --size fails if the grid is not exactly W×H.
   text PNG
-      prints a PNG in sprite-text format, to edit an existing sprite.
+      prints a PNG in sprite-text format: to edit an existing sprite, or to finish the construct and concept
+      routes (warns about semi-transparent pixels on stderr).
 Usage: python -I tools/grid.py render|text ..."""
 import re
 import sys
@@ -143,6 +145,9 @@ def render(args: list[str]) -> None:
               + (" …" if len(lonely) > 24 else "") + "  (fine if they are eyes or glints)")
     if box and (box[0] == 0 or box[1] == 0 or box[2] == w):
         print("figure touches the top or a side of the canvas")
+    soft = sorted(k for k in used if palette[k][3] < 255)
+    if soft:
+        print(f"semi-transparent colors: {''.join(soft)} (not pixel-perfect: use opaque colors and '.' unless asked)")
     print(f"wrote {out / f'{name}_1x.png'} and {out / f'{name}_view.png'}")
 
 
@@ -151,6 +156,10 @@ def text(args: list[str]) -> None:
     colors = sorted({tuple(int(v) for v in c) for c in a.reshape(-1, 4) if c[3] > 0}, key=lambda c: sum(c[:3]))
     if len(colors) > len(KEYS):
         sys.exit(f"{len(colors)} colors: too many for sprite text")
+    soft = int(((a[..., 3] > 0) & (a[..., 3] < 255)).sum())
+    if soft:
+        print(f"warning: {soft} semi-transparent pixels (not pixel-perfect: each pixel should be opaque or "
+              "transparent)", file=sys.stderr)
     keys = {c: KEYS[i] for i, c in enumerate(colors)}
     for c, k in keys.items():
         print(f"{k} = #" + "".join(f"{v:02x}" for v in (c if c[3] < 255 else c[:3])))

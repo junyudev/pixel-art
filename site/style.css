@@ -116,7 +116,7 @@ a.card:hover { transform: translate(-2px, -2px); color: inherit; }
 .win { color: var(--good); } .loss { color: var(--bad); }
 
 /* benchmark cards */
-.bench { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 28px; }
+.bench { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 28px; }
 .bench .frame { padding: 22px 24px; }
 .bench h3 { font: 15px/1.6 "Press Start 2P", "Fusion Pixel", monospace; margin-bottom: 6px; }
 ol.mini { list-style: none; padding: 0; margin: 16px 0 0; }
@@ -242,7 +242,7 @@ html[lang="zh"] .install .copy { font-size: 12px; }
 .sheet.recon .cell.orig { outline: 3px solid var(--accent); outline-offset: -3px; }
 
 /* concept route: gpt-image concept beside the recovered pixels */
-.concepts { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 22px; }
+.concepts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(440px, 100%), 1fr)); gap: 22px; }
 .concept { margin: 0; }
 .concept-pair { display: grid; grid-template-columns: 1fr 1fr; }
 .concept-img { display: grid; place-items: center; background: var(--card-2); border-right: 4px solid var(--frame); }
@@ -253,3 +253,29 @@ html[lang="zh"] .install .copy { font-size: 12px; }
 .concept figcaption span { font-size: 14px; color: var(--muted); }
 @media (max-width: 520px) { .concepts { grid-template-columns: 1fr; } }
 html[lang="zh"] .sheet .row, html[lang="zh"] .concept figcaption b { font-size: 12px; }
+
+/* home: the three routes, each with real output; sections they link to clear the sticky header */
+.rt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.rt { display: flex; flex-direction: column; gap: 8px; padding: 20px 22px 22px; text-decoration: none; transition: transform .08s; }
+a.rt:hover { transform: translate(-2px, -2px); color: inherit; }
+.rt-size { font: 11px/1.4 "Press Start 2P", "Fusion Pixel", monospace; color: var(--accent-ink); }
+.rt-name { font: 18px/1.4 "Press Start 2P", "Fusion Pixel", monospace; }
+.rt-art { margin-top: auto; display: flex; align-items: flex-end; justify-content: center; gap: 10px; height: 156px; padding: 12px;
+  border: 2px solid var(--border); background: var(--card-2); }
+.rt-art.sand { background: var(--stage); }
+.rt-art img:not(.spr) { object-fit: contain; }
+#grid, #construct, #concept { scroll-margin-top: 84px; }
+@media (max-width: 960px) { .rt-grid { grid-template-columns: 1fr; } }
+html[lang="zh"] .rt-size { font-size: 12px; }
+html[lang="zh"] .rt-name { font-size: 24px; }
+
+/* phones: keep everything inside the viewport */
+.hero > *, .install code { min-width: 0; }
+@media (max-width: 560px) {
+  .wrap { padding: 0 16px; }
+  .top .wrap { gap: 8px; }
+  .top .iconbtn[aria-label="GitHub"] { display: none; }
+  .brand { font-size: 11px; }
+  .stats { gap: 28px; }
+  .rt-art { height: auto; flex-wrap: wrap; }
+}
