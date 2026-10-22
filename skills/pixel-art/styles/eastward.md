@@ -15,7 +15,7 @@ These are guardrails, not goals. A sprite outside them is wrong; being inside th
 | Kid sprite | ≈ 35–38 h × 17–27 w (Sam 26×36, Four-Eyes 17×38) |
 | Canvas | adult 48×64, kid 32×48 |
 | Colors per sprite | 12 (10–16) including ink. Budget: ≤ 16 |
-| Tones per material | 2.2 (1.6–2.7) for adults: base + shadow. A highlight on 1–2 materials (hair, metal or glass) |
+| Tones per material | ≈ 2 (base + shadow). A highlight on 1–3 materials (skin, hair, metal or glossy) |
 | Dark pixels (value < 0.25) | 25 % (17–32 %) |
 | Silhouette edge inked | 87 % (69–98 %) |
 | Interior dark pixels | 10 % (5–16 %): features, overlaps, deep folds |
@@ -66,7 +66,6 @@ Faces, hands and legs: see `eastward_anatomy.md`.
   - the nose is shaped with shadow color;
   - cheeks and blush are flat shapes.
   Beards and mustaches are big masses broken by a few shadow marks.
-- **Arms are separate shapes:** an ink line or a small gap sets them off from the torso, the hands hang clear of the hips, and held props are held out from the body (Arthur's lantern). Characters cloaked by a smock, cape or long hair keep their arms hidden.
 - **Hands:** big light mittens of 4–6 px, sometimes with one ink line between the fingers. Boots and feet are blocky.
 - **Clothing:** big flat areas with a few drawn shapes on top (straps, pockets, stains, a fold or two).
 - **Palette:** muted and warm. Shadows shift toward brown or purple, and the shared ink and brown tones recur across characters.

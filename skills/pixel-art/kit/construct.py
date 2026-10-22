@@ -4,8 +4,8 @@ pixelkit stacks parts that are each outlined and lit on their own, which reads a
 together. Here the figure is built and lit as one form:
 1. Regions (polygons or ellipses in canvas px, listed back-to-front) rasterize into one owner map.
 2. One light for the whole figure. Each region declares the plane it faces (`tilt`), edges roll
-   off with a small bevel (`volume`, off by default: per-part roll-off reads as carved relief), and a
-   gentle silhouette-wide gradient gives the figure its one big shadow side. (A single inflated-silhouette height field alone makes faces look down into the neck.)
+   off with a small bevel (`volume`), and a gentle silhouette-wide gradient keeps big masses
+   coherent. (A single inflated-silhouette height field alone makes faces look down into the neck.)
    `cast` adds contact shadows; isolated tone speckles are cleaned.
 3. Lines: ink around the outer silhouette; interior boundaries follow each region's `line`
    policy ('ink' | 'shade' | None) and can be broken by hand edits.
@@ -43,7 +43,7 @@ class Light:
     direction: tuple[float, float, float] = (-0.5, -0.7, 0.9)
     global_weight: float = 0.35
     blur: float = 4.0
-    local_weight: float = 0.0  # per-part edge roll-off; any value hugs every outline with shade (relief look)
+    local_weight: float = 0.35  # edge roll-off; higher values hug every outline with shade (pillow look)
     bevel: float = 2.5
     hi: float = 0.86
     shade: float = 0.55
