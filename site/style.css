@@ -55,7 +55,7 @@ section { margin: 72px 0; }
   border-bottom: 4px solid var(--frame); backdrop-filter: blur(4px); }
 .top .wrap { display: flex; align-items: center; gap: 28px; height: 64px; }
 .brand { display: flex; align-items: center; gap: 10px; font-family: "Press Start 2P", monospace; font-size: 14px; text-decoration: none; }
-.brand svg { width: 24px; height: 24px; }
+.brand img { width: 32px; height: 32px; image-rendering: pixelated; }
 nav.main { display: flex; gap: 22px; flex: 1; }
 nav.main a { font-family: "Press Start 2P", "Fusion Pixel", monospace; font-size: 11px; color: var(--muted); text-decoration: none; padding: 6px 0;
   border-bottom: 3px solid transparent; }
@@ -260,6 +260,7 @@ html[lang="zh"] .sheet .row, html[lang="zh"] .concept figcaption b { font-size: 
 a.rt:hover { transform: translate(-2px, -2px); color: inherit; }
 .rt-size { font: 11px/1.4 "Press Start 2P", "Fusion Pixel", monospace; color: var(--accent-ink); }
 .rt-name { font: 18px/1.4 "Press Start 2P", "Fusion Pixel", monospace; }
+.rt-cost { font-size: 14px; color: var(--accent-ink); }
 .rt-art { margin-top: auto; display: flex; align-items: flex-end; justify-content: center; gap: 10px; height: 156px; padding: 12px;
   border: 2px solid var(--border); background: var(--card-2); }
 .rt-art.sand { background: var(--stage); }

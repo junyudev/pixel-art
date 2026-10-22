@@ -38,13 +38,15 @@ const S = {
     archiveName: "Archive: early briefs", archiveDesc: "Three invented briefs from the first rounds (v1–v10), judged pairwise with reference sprites but no original.",
     runs: (n) => `${n} judgings`, rating: "Rating", boardTitle: "Leaderboard",
     boardNote: "Rating: a Bradley–Terry fit over every paired judging, on an Elo-like scale where 1000 is the average entry. The bar is a 90 % interval from resampling whole characters. Overlapping bars mean the judges can't tell those entries apart yet.",
-    thEntry: "Entry", thRating: "Rating (90 % interval)", thVs: "vs v12", thMean: "Mean /70", thCalls: "Calls", thOut: "Output", thMin: "Minutes", thDrawn: "Drawn",
+    thEntry: "Entry", thRating: "Rating (90 % interval)", thVs: "vs v12", thMean: "Mean /70", thCost: "Cost ≈", thCalls: "Calls", thOut: "Output", thMin: "Minutes", thDrawn: "Drawn",
     histTitle: "Ratings across versions", histNote: "In the order the versions were written. Each new rule set was meant to fix what judges complained about; the ratings stayed within each other's intervals. Dashed lines: the same models with no skill.",
     critTitle: "Scores by criterion", critNote: "Mean score out of 10 over every judging of the entry. Opponents differ between entries, so read rows, not small gaps.",
-    costNote: "Cost is the median per drawing: API calls, output tokens and active minutes (interruptions subtracted). The image-gen route also calls an external image model, not counted here.",
+    costNote: "Per drawing, median: cost, API calls, output tokens and active minutes (interruptions subtracted). Cost ≈ API list price ÷ 50: the author found the skill's runs hit the prompt cache heavily, so ÷ 50 estimates what a drawing really costs on a subscription. List prices per million tokens in / out: Opus 5.5 $4 / $20, GPT-6 Astra $10 / $50. Image generation (image-gen, concept route) is not included.",
+    costFoot: "Cost per sprite ≈ API list price ÷ 50: the author found the skill's runs hit the prompt cache heavily, so ÷ 50 estimates the real cost on a subscription. Image generation is not included.",
+    perSprite: (v) => `≈ ${v} per sprite`,
     charsLead: "Each character is drawn only from its brief. Held-out characters were chosen after the skill version under test was written.",
     heldout: "held out", brief: "Brief", attemptsTitle: "Every attempt", best: "best", won: "won", notes: "What the judges said was still missing",
-    noJudging: "not judged", cost: (c) => `${c.calls} calls · ${Math.round(c.out / 1000)}k out · ${Math.round(c.minutes)} min`,
+    noJudging: "not judged", cost: (c) => `${c.usd != null ? `≈ ${fmtUsd(c.usd)} · ` : ""}${c.calls != null ? `${c.calls} calls · ` : ""}${Math.round(c.out / 1000)}k out · ${Math.round(c.minutes)} min`,
     smallLead: "Fixed briefs at 16×16 and 32×32 with no original to copy. Each pair of drawings is judged blind by two judges, sides swapped, on readability, silhouette, form, palette, cleanliness, brief and appeal.",
     smallPairs: "Head to head", smallTasks: "Every task", pending: "waiting for results",
     archiveLead: "The first rounds used invented briefs and no original: two versions side by side, judged with reference sprites for style. v1 and v3 predate the judging; v10 was stopped before it.",
@@ -84,13 +86,15 @@ const S = {
     archiveName: "存档：早期测试题", archiveDesc: "最早几轮（v1–v10）的三道自拟题目：有参考精灵图但没有原图，两两盲评。",
     runs: (n) => `${n} 次评审`, rating: "评分", boardTitle: "排行榜",
     boardNote: "评分：对全部成对评审做 Bradley–Terry 拟合，采用类似 Elo 的尺度，1000 为平均水平。横条是按角色重抽样得到的 90% 区间；区间重叠说明评审目前还分不出高下。",
-    thEntry: "版本", thRating: "评分（90% 区间）", thVs: "对 v12", thMean: "平均 /70", thCalls: "调用", thOut: "输出", thMin: "分钟", thDrawn: "图数",
+    thEntry: "版本", thRating: "评分（90% 区间）", thVs: "对 v12", thMean: "平均 /70", thCost: "成本 ≈", thCalls: "调用", thOut: "输出", thMin: "分钟", thDrawn: "图数",
     histTitle: "各版本的评分", histNote: "按版本编写的先后排列。每一版新规则都是针对评审的意见写的，但评分始终落在彼此的区间之内。虚线：同样的模型不用技能。",
     critTitle: "各项得分", critNote: "该版本在所有评审中的平均分（满分 10）。各版本的对手不同，看整行，不要看细微差距。",
-    costNote: "成本是每张图的中位数：API 调用次数、输出 token、实际用时（已扣除中断）。生图路线另外调用了外部图像模型，未计入。",
+    costNote: "每张图的中位数：成本、API 调用次数、输出 token、实际用时（已扣除中断）。成本 ≈ API 标价 ÷ 50：作者发现这个技能在执行过程中缓存命中率很高，所以按 ÷ 50 估算订阅下每张图的实际成本。每百万 token 输入/输出标价：Opus 5.5 $4 / $20，GPT-6 Astra $10 / $50。生图（image-gen、生图路线）的图像生成费用未计入。",
+    costFoot: "每张图成本 ≈ API 标价 ÷ 50：作者发现这个技能在执行过程中缓存命中率很高，所以按 ÷ 50 估算订阅下的实际成本。图像生成费用未计入。",
+    perSprite: (v) => `每张约 ${v}`,
     charsLead: "每个角色只凭描述来画。“保留角色”是在被测版本写完之后才选出的。",
     heldout: "保留", brief: "描述", attemptsTitle: "全部作品", best: "最佳", won: "胜", notes: "评审认为还欠缺的地方",
-    noJudging: "未评审", cost: (c) => `${c.calls} 次调用 · 输出 ${Math.round(c.out / 1000)}k · ${Math.round(c.minutes)} 分钟`,
+    noJudging: "未评审", cost: (c) => `${c.usd != null ? `≈ ${fmtUsd(c.usd)} · ` : ""}${c.calls != null ? `${c.calls} 次调用 · ` : ""}输出 ${Math.round(c.out / 1000)}k · ${Math.round(c.minutes)} 分钟`,
     smallLead: "16×16 和 32×32 的固定题目，没有原图可照。每对作品由 2 位评审盲评（左右互换），评可读性、轮廓、体积、配色、干净程度、切题和吸引力。",
     smallPairs: "两两对比", smallTasks: "全部题目", pending: "等待结果",
     archiveLead: "最早几轮用的是自拟题目、没有原图：两个版本并排，评审参照风格参考图打分。v1、v3 早于评审流程，v10 在评审前被叫停。",
@@ -128,6 +132,12 @@ const task = (id) => D.recon.tasks.find((x) => x.id === id);
 const mean = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
 const avgTotal = (a) => (a.judgings.length ? mean(a.judgings.map((j) => j.total)) : null);
 const winsOf = (a) => a.judgings.filter((j) => j.won).length;
+// Shown cost (API list price ÷ 50, computed in eval/site.py): cents keep a third digit.
+const fmtUsd = (v) => (v == null ? "—" : `$${v >= 0.1 ? v.toFixed(2) : v.toFixed(3)}`);
+const medUsd = (atts) => {
+  const v = atts.map((a) => a.cost?.usd).filter((x) => x != null).sort((a, b) => a - b);
+  return v.length ? (v[(v.length - 1) >> 1] + v[v.length >> 1]) / 2 : null;
+};
 const fmtK = (n) => (n == null ? "—" : n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : `${Math.round(n / 1e3)}k`);
 
 function spr(s, px = 220, alt = "") {
@@ -226,10 +236,16 @@ function routeStrip() {
     construct: `<div class="rt-art sand">${["fumi", "arthur", "selma"].map((x) => img(att(RELEASE_RECON, x), 2)).join("")}</div>`,
     concept: fox ? `<div class="rt-art"><img src="${fox.concept}" height="128" alt=""><span class="faint">→</span>${img(fox, 2)}</div>` : "",
   };
+  const usd = {
+    grid: medUsd(D.small.attempts.filter((a) => ["lite", "opusx"].includes(a.entry))),
+    construct: D.recon.leaderboard.find((r) => r.entry === RELEASE_RECON)?.usd,
+    concept: medUsd(D.small.attempts.filter((a) => a.entry === "concept")),
+  };
   return `<section class="routes-home"><h2>${t("routesTitle")}</h2>
     <div class="rt-grid">${t("homeRoutes").map(([size, name, desc, id]) => `<a class="frame rt" href="#${id}" data-goto="${id}">
       <span class="rt-size">${esc(size)}</span><span class="rt-name">${esc(name)} <span class="faint">↓</span></span>
-      <span class="muted small">${esc(desc)}</span>${art[id]}</a>`).join("")}</div></section>`;
+      <span class="muted small">${esc(desc)}</span>${usd[id] != null ? `<span class="rt-cost">${t("perSprite", fmtUsd(usd[id]))}</span>` : ""}${art[id]}</a>`).join("")}</div>
+    <p class="tiny faint" style="margin-top:12px">${t("costFoot")}</p></section>`;
 }
 
 // 16×16 showcase as a sprite sheet: per model a row with the skill and one without, a column per brief.
@@ -256,7 +272,10 @@ function showcase() {
   return `<section id="grid"><p class="eyebrow">Grid route · 16×16</p><h2>${t("showTitle")}</h2><p class="note">${t("showLead")}</p>
     <div class="frame sheet-wrap"><div class="sheet" style="--cols:${tasks.length}">
       ${tasks.map((x) => `<span class="col">${esc(taskName(x.id))}</span>`).join("")}
-      ${rows.map(([name, e, skill]) => `<span class="row ${skill ? "" : "plain"}">${esc(name)} · ${skill ? "pixel-art" : esc(t("noSkill"))}</span>${tasks.map((x) => cell(x, e)).join("")}`).join("")}
+      ${rows.map(([name, e, skill]) => {
+        const v = medUsd(D.small.attempts.filter((a) => a.entry === e && tasks.some((x) => x.id === a.task)));
+        return `<span class="row ${skill ? "" : "plain"}">${esc(name)} · ${skill ? "pixel-art" : esc(t("noSkill"))}${v != null ? `<em>${t("perSprite", fmtUsd(v))}</em>` : ""}</span>${tasks.map((x) => cell(x, e)).join("")}`;
+      }).join("")}
     </div></div>
     ${line ? `<p class="small muted" style="margin-top:12px">${t("judged")} · ${line}</p>` : ""}</section>`;
 }
@@ -288,7 +307,8 @@ function reconSection() {
   const label = ([name, e, skill]) => {
     if (!e) return `<span class="row orig">${esc(name)}</span>`;
     const r = R.leaderboard.find((q) => q.entry === e);
-    return `<span class="row ${skill ? "" : "plain"}">${esc(name)} · ${skill ? "pixel-art" : esc(t("noSkill"))}${r && r.vsAnchor.n ? `<em>${t("vsV12", r.vsAnchor.w, r.vsAnchor.n)}</em>` : ""}</span>`;
+    const notes = [r && r.vsAnchor.n ? t("vsV12", r.vsAnchor.w, r.vsAnchor.n) : "", r && r.usd != null ? t("perSprite", fmtUsd(r.usd)) : ""].filter(Boolean);
+    return `<span class="row ${skill ? "" : "plain"}">${esc(name)} · ${skill ? "pixel-art" : esc(t("noSkill"))}${notes.length ? `<em>${notes.join(" · ")}</em>` : ""}</span>`;
   };
   return `<section id="construct"><p class="eyebrow">Construct route · Eastward</p><h2>${t("reconTitle")}</h2><p class="note">${t("reconLead")}</p>
     <div class="frame sheet-wrap"><div class="sheet recon" style="--cols:${R.tasks.length}">
@@ -341,14 +361,14 @@ function leaderboardPage() {
     <p class="eyebrow">${t("navBoard")}</p><h1>${t("boardTitle")}</h1>
     <p class="note">${t("boardNote")}</p>
     <div class="frame lbwrap"><table class="lb">
-      <thead><tr><th>#</th><th>${t("thEntry")}</th><th>${t("thRating")}</th><th>${t("thVs")}</th><th>${t("thMean")}</th><th>${t("thCalls")}</th><th>${t("thOut")}</th><th>${t("thMin")}</th><th>${t("thDrawn")}</th></tr></thead>
+      <thead><tr><th>#</th><th>${t("thEntry")}</th><th>${t("thRating")}</th><th>${t("thVs")}</th><th>${t("thMean")}</th><th>${t("thCost")}</th><th>${t("thCalls")}</th><th>${t("thOut")}</th><th>${t("thMin")}</th><th>${t("thDrawn")}</th></tr></thead>
       <tbody>${rows.map((r, i) => `<tr class="${D.entries[r.entry]?.release ? "release" : ""}">
         <td>${rankBadge(i)}</td>
         <td><div class="name">${esc(entryLabel(r.entry))}</div><div class="sub">${esc(entryNote(r.entry))}</div></td>
         <td><span class="num" style="font:13px 'Press Start 2P',monospace">${r.rating}</span><br>${ci(r)}</td>
         <td class="num">${r.entry === R.anchor ? "—" : r.vsAnchor.n ? t("vsAnchor", r.vsAnchor.w, r.vsAnchor.n) : "—"}</td>
         <td class="num">${r.mean.toFixed(1)}</td>
-        <td class="num">${r.calls == null ? "—" : Math.round(r.calls)}</td><td class="num">${fmtK(r.out)}</td><td class="num">${r.minutes == null ? "—" : Math.round(r.minutes)}</td>
+        <td class="num">${fmtUsd(r.usd)}</td><td class="num">${r.calls == null ? "—" : Math.round(r.calls)}</td><td class="num">${fmtK(r.out)}</td><td class="num">${r.minutes == null ? "—" : Math.round(r.minutes)}</td>
         <td class="num">${r.drawn}</td></tr>`).join("")}</tbody></table></div>
     <p class="note">${t("costNote")}</p>
   </section>
@@ -450,12 +470,16 @@ function smallPage() {
       return `<tr><td style="min-width:220px;max-width:300px"><div style="font:10px/1.6 'Press Start 2P',monospace">${x.canvas[0]}×${x.canvas[1]}</div><div class="small muted">${esc(L(x.brief))}</div></td>${cells}</tr>`;
     }).join("");
     return `<h3 class="display" style="font-size:13px;margin:32px 0 12px">${esc(title)}</h3><div class="frame" style="overflow-x:auto;padding:12px">
-      <table class="small-grid"><tr><th></th>${entries.map((e) => `<th>${esc(entryLabel(e))}</th>`).join("")}</tr>${rows}</table></div>`;
+      <table class="small-grid"><tr><th></th>${entries.map((e) => {
+        const v = medUsd(Sm.attempts.filter((a) => a.entry === e && tasks.some((x) => x.id === a.task)));
+        return `<th>${esc(entryLabel(e))}${v != null ? `<div class="faint">${t("perSprite", fmtUsd(v))}</div>` : ""}</th>`;
+      }).join("")}</tr>${rows}</table></div>`;
   };
   return `<section style="margin-top:56px"><p class="eyebrow">${t("smallName")}</p><h1>${t("navSmall")}</h1><p class="note">${t("smallLead")}</p>
     ${Sm.pairings.length ? `<div class="frame" style="padding:20px 24px;max-width:860px"><h3 class="display" style="font-size:13px">${t("smallPairs")}</h3><ol class="mini">${sortedPairings().map((p) => pairingLine(p)).join("")}</ol></div>` : `<p class="faint">${t("pending")}</p>`}
   </section>
-  <section><h2>${t("smallTasks")}</h2>${[["suite", t("setSuite")], ["showcase", t("setShowcase")], ["concept", t("setConcept")]].map(table).join("")}</section>`;
+  <section><h2>${t("smallTasks")}</h2>${[["suite", t("setSuite")], ["showcase", t("setShowcase")], ["concept", t("setConcept")]].map(table).join("")}
+    <p class="tiny faint" style="margin-top:12px">${t("costFoot")}</p></section>`;
 }
 
 function archivePage() {
