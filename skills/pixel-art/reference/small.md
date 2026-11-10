@@ -7,7 +7,7 @@ At this size the whole sprite fits in one view, and you already draw it well. Wr
 1. **Write the sprite text** (format below) to `NAME.txt`.
 2. **Render:** `python -I tools/grid.py render NAME.txt out/ --size WxH`.
    - It fails on ragged rows, undefined keys or a wrong size.
-   - It lists isolated pixels (keep them only if they are deliberate eyes, glints or sparkles) and unused palette keys.
+   - It lists isolated pixels (worth keeping when they are deliberate eyes, glints or sparkles) and unused palette keys.
 3. **Look at `out/NAME_view.png`.** Judge the 1× and 2× thumbnails and the silhouette first, because that is how the sprite is seen. Use the big grid view to find the pixels to change. Ask: does it read instantly at 1×, is every item in the request there, is the light consistent?
 4. **Fix and re-render** until it reads at 1×. Two or three loops are usually enough.
 5. **Deliver** `NAME.txt` and the `out/NAME_1x.png` rendered from it (exact canvas, transparent background).

@@ -12,7 +12,7 @@ Real heads (top 45 % of each sprite) printed with `--map eastward_palette.json`,
    - the eye-socket band merging into the brows;
    - the nose shape and its dark underside;
    - the mouth, and the shadows under the lip and the chin.
-3. Change hair, headwear, features and colors to make your own character. Don't copy pixels.
+3. Change hair, headwear, features and colors to make your own character, rather than copying pixels.
 
 ## Women
 

@@ -73,6 +73,30 @@ def limb(start: Point, end: Point, w_start: float, w_end: float) -> tuple[Point,
     return ((x0 + nx * a, y0 + ny * a), (x1 + nx * b, y1 + ny * b), (x1 - nx * b, y1 - ny * b), (x0 - nx * a, y0 - ny * a))
 
 
+def mirror(points: tuple[Point, ...], cx: float) -> tuple[Point, ...]:
+    """The same polygon points mirrored about the vertical line x = cx, in reverse order."""
+    return tuple((2 * cx - x, y) for x, y in reversed(points))
+
+
+def centred(half: tuple[Point, ...], cx: float) -> tuple[Point, ...]:
+    """Outline of a shape that straddles x = cx, from its screen-left half listed top to bottom."""
+    return (*half, *mirror(half, cx))
+
+
+def pair(name: str, material: str, half: tuple[Point, ...], cx: float, **kw) -> list[Region]:
+    """A screen-left shape and its mirror twin as two regions, NAME_l and NAME_r. They share every setting except
+    `tilt`, whose x slope is mirrored too."""
+    twin = {**kw, "tilt": (-kw["tilt"][0], kw["tilt"][1])} if "tilt" in kw else kw
+    return [Region(f"{name}_l", material, half, **kw), Region(f"{name}_r", material, mirror(half, cx), **twin)]
+
+
+def block_pair(at: tuple[int, int], rows: str, cx: float) -> list[tuple]:
+    """A ("block", ...) op on the screen-left side and its mirror twin across x = cx."""
+    lines = [r.strip() for r in rows.strip().splitlines() if r.strip()]
+    x, y = at
+    return [("block", at, rows), ("block", (round(2 * cx) - x - len(lines[0]) + 1, y), "\n".join(r[::-1] for r in lines))]
+
+
 def arc_pts(x0: float, x1: float, y: float, sag: float) -> tuple[Point, ...]:
     """Points from (x0, y) to (x1, y) along the front half of a horizontal ring seen from in front and above:
     a parabola dipping `sag` px toward the viewer (down) at the middle. Use for hems, belts, cuffs, collars, hat

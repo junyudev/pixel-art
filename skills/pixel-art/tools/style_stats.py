@@ -13,6 +13,10 @@ Metrics per sprite:
   flat_h      share of interior horizontal color boundaries lying in straight runs >= 6 px. Seen from in front and
               above, belts, hems, cuffs and collars are arcs; front-view thinking draws them as flat lines (refs median 0.28)
   checker     share of 2x2 blocks forming a checkerboard of two colors (dithered/woven textures; refs p90 0.015)
+  mirror      share of opaque pixels with no partner when the silhouette is mirrored about its best vertical axis.
+              Idle sprites are drawn as mirror images (refs median 0.01, p75 0.04); the rest mostly hold a prop,
+              strike a pose or wear hair or a hat to one side. A weight leg, tilted shoulders or staggered feet
+              score 0.04-0.08
   head_w / shoulder_w / feet_w   silhouette width at 20 % / 40 % / 95 % of the height, divided by the max width.
               Seen from slightly above, real sprites are widest around the shoulders-to-hands band and narrow to
               small feet (adult feet_w median 0.43); barrel figures keep their width down to big boots.
@@ -38,6 +42,17 @@ def load(src: str) -> list[tuple[str, Image.Image]]:
     p = Path(src)
     files = sorted(p.glob("*.png")) if p.is_dir() else [p]
     return [(f.stem, Image.open(f).convert("RGBA")) for f in files]
+
+
+def mirror_share(opaque: np.ndarray) -> float:
+    """Share of opaque pixels with no partner when the silhouette is mirrored about a vertical axis. The axis
+    that leaves the fewest is used, so a prop held out to one side counts as itself and doesn't shift the axis."""
+    cols = np.nonzero(opaque.any(axis=0))[0]
+    sil = opaque[:, cols.min():cols.max() + 1]
+    w = sil.shape[1]
+    wide = np.pad(sil, ((0, 0), (w, w)))  # room to slide the mirrored copy sideways
+    flipped = wide[:, ::-1]
+    return min(int((wide & ~np.roll(flipped, d, axis=1)).sum()) for d in range(-(w // 2), w // 2 + 1)) / sil.sum()
 
 
 def fingerprint(img: Image.Image) -> dict[str, float]:
@@ -96,12 +111,13 @@ def fingerprint(img: Image.Image) -> dict[str, float]:
         "straight": runs_straight / runs_total,
         "checker": float(checker),
         "flat_h": hb_flat / max(1, int(hb.sum())),
+        "mirror": mirror_share(opaque),
         "head_w": widths[0] / max_w, "shoulder_w": widths[1] / max_w, "feet_w": widths[2] / max_w,
     }
 
 
 COLS = ["h", "w", "colors", "dark", "edge_ink", "inner_dark", "speckle", "cluster", "tones", "straight", "checker", "flat_h",
-        "head_w", "shoulder_w", "feet_w"]
+        "mirror", "head_w", "shoulder_w", "feet_w"]
 
 
 def fmt(d: dict) -> str:

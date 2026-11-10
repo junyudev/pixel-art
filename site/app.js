@@ -41,7 +41,7 @@ const S = {
     thEntry: "Entry", thRating: "Rating (90 % interval)", thVs: "vs v12", thMean: "Mean /70", thCost: "Cost ≈", thCalls: "Calls", thOut: "Output", thMin: "Minutes", thDrawn: "Drawn",
     histTitle: "Ratings across versions", histNote: "In the order the versions were written. Each new rule set was meant to fix what judges complained about; the ratings stayed within each other's intervals. Dashed lines: the same models with no skill.",
     critTitle: "Scores by criterion", critNote: "Mean score out of 10 over every judging of the entry. Opponents differ between entries, so read rows, not small gaps.",
-    costNote: "Per drawing, median: cost, API calls, output tokens and active minutes (interruptions subtracted). Cost ≈ API list price ÷ 50: the author found the skill's runs hit the prompt cache heavily, so ÷ 50 estimates what a drawing really costs on a subscription. List prices per million tokens in / out: Opus 5.5 $4 / $20, GPT-6 Astra $10 / $50. Image generation (image-gen, concept route) is not included.",
+    costNote: "Per drawing, median: cost, API calls, output tokens and active minutes (interruptions subtracted). Cost ≈ API list price ÷ 50: the author found the skill's runs hit the prompt cache heavily, so ÷ 50 estimates what a drawing really costs on a subscription. List prices per million tokens in / out: Fable 5.2 $8 / $40, Opus 5.5 $4 / $20, GPT-6 Astra $10 / $50. Image generation (image-gen, concept route) is not included.",
     costFoot: "Cost per sprite ≈ API list price ÷ 50: the author found the skill's runs hit the prompt cache heavily, so ÷ 50 estimates the real cost on a subscription. Image generation is not included.",
     perSprite: (v) => `≈ ${v} per sprite`,
     charsLead: "Each character is drawn only from its brief. Held-out characters were chosen after the skill version under test was written.",
@@ -89,7 +89,7 @@ const S = {
     thEntry: "版本", thRating: "评分（90% 区间）", thVs: "对 v12", thMean: "平均 /70", thCost: "成本 ≈", thCalls: "调用", thOut: "输出", thMin: "分钟", thDrawn: "图数",
     histTitle: "各版本的评分", histNote: "按版本编写的先后排列。每一版新规则都是针对评审的意见写的，但评分始终落在彼此的区间之内。虚线：同样的模型不用技能。",
     critTitle: "各项得分", critNote: "该版本在所有评审中的平均分（满分 10）。各版本的对手不同，看整行，不要看细微差距。",
-    costNote: "每张图的中位数：成本、API 调用次数、输出 token、实际用时（已扣除中断）。成本 ≈ API 标价 ÷ 50：作者发现这个技能在执行过程中缓存命中率很高，所以按 ÷ 50 估算订阅下每张图的实际成本。每百万 token 输入/输出标价：Opus 5.5 $4 / $20，GPT-6 Astra $10 / $50。生图（image-gen、生图路线）的图像生成费用未计入。",
+    costNote: "每张图的中位数：成本、API 调用次数、输出 token、实际用时（已扣除中断）。成本 ≈ API 标价 ÷ 50：作者发现这个技能在执行过程中缓存命中率很高，所以按 ÷ 50 估算订阅下每张图的实际成本。每百万 token 输入/输出标价：Fable 5.2 $8 / $40，Opus 5.5 $4 / $20，GPT-6 Astra $10 / $50。生图（image-gen、生图路线）的图像生成费用未计入。",
     costFoot: "每张图成本 ≈ API 标价 ÷ 50：作者发现这个技能在执行过程中缓存命中率很高，所以按 ÷ 50 估算订阅下的实际成本。图像生成费用未计入。",
     perSprite: (v) => `每张约 ${v}`,
     charsLead: "每个角色只凭描述来画。“保留角色”是在被测版本写完之后才选出的。",
@@ -118,9 +118,9 @@ const NAMES = {
   mechanic: ["Mechanic", "机械师"], fisherman: ["Old fisherman", "老渔夫"], fox: ["Fox ranger", "狐狸游侠"],
 };
 const taskName = (id) => (NAMES[id] ? NAMES[id][lang === "zh" ? 1 : 0] : id);
-// Reconstruction entries by model and skill (true = pixel-art 1.0, false = the no-skill baseline).
-const RELEASE_RECON = "v8R";
-const RECON = { opus: { name: "Opus 5.5", true: RELEASE_RECON, false: "opusraw" }, astra: { name: "GPT-6 Astra", true: "astra", false: "astraraw" } };
+// Reconstruction entries by model and skill (true = with pixel-art, false = the no-skill baseline, if drawn).
+const RELEASE_RECON = "fablem";
+const RECON = { fable: { name: "Fable 5.2", true: RELEASE_RECON }, opus: { name: "Opus 5.5", true: "v8R", false: "opusraw" }, astra: { name: "GPT-6 Astra", true: "astra", false: "astraraw" } };
 // 16×16 showcase rows: model, skill entry, no-skill entry.
 const SHEET = [["Opus 5.5", "opusx", "base"], ["GPT-6 Astra", "astra", "astraraw"]];
 let heroTimer = null;
@@ -444,7 +444,7 @@ function attemptCard(a, isBest) {
   const notes = [...new Set(a.judgings.flatMap((j) => j.notes))];
   const vs = [...new Set(a.judgings.map((j) => j.opp))].map(entryLabel).join(", ");
   return `<div class="frame card attempt">
-    <div class="title">${esc(entryLabel(a.entry))} ${isBest ? `<span class="tag">${t("best")}</span>` : ""}${D.entries[a.entry]?.release ? `<span class="tag alt">1.0</span>` : ""}</div>
+    <div class="title">${esc(entryLabel(a.entry))} ${isBest ? `<span class="tag">${t("best")}</span>` : ""}${D.entries[a.entry]?.version ? `<span class="tag alt">${D.entries[a.entry].version}</span>` : ""}</div>
     <div class="stage sand" style="height:230px">${spr(a, 200, entryLabel(a.entry))}</div>
     <div class="scorebar">${tot == null ? `<span class="faint">${t("noJudging")}</span>` : `<span class="num" style="font:12px 'Press Start 2P',monospace">${tot.toFixed(0)}${t("of70")}</span><span class="${w * 2 >= n ? "win" : "loss"}">${t("won")} ${w}/${n}</span>`}</div>
     <div class="meta">${vs ? `vs ${esc(vs)}` : ""}${a.cost ? `<br>${t("cost", a.cost)}` : ""}</div>
@@ -500,9 +500,9 @@ const METHOD = {
   <h2>Protocol</h2><ol class="steps">
     <li><b>Targets.</b> 10 real Eastward characters (48×64 adults, 32×48 kids), 4 of them held out: chosen after the skill version under test was written.</li>
     <li><b>Brief.</b> Each target is described in 3–5 sentences: build, hair, face, clothes, props, pose. Nothing else about it is given.</li>
-    <li><b>Drawer.</b> A fresh agent (Claude Opus 5.5) with only the skill under test, the brief, Python, and the game's sprite pack with every target removed. It never sees the original. The skill copy is scrubbed of the target's name.</li>
+    <li><b>Drawer.</b> A fresh agent (Claude Opus 5.5; Claude Fable 5.2 at medium effort for 1.2) with only the skill under test, the brief, Python, and the game's sprite pack with every target removed. It never sees the original. The skill copy is scrubbed of the target's name.</li>
     <li><b>Pairing.</b> Two attempts at the same character are shown next to the original (8× and game size), anonymized as X and Y. Two judges see the pair, the second with X and Y swapped. The key stays outside the packet.</li>
-    <li><b>Judging.</b> Each judge (a fresh Claude agent with vision) scores both attempts 1–10 on 7 criteria against the original, picks the closer one, and names the 3 biggest things the better one still misses.</li>
+    <li><b>Judging.</b> Each judge (a fresh Claude agent with vision: Opus 5.5 through 1.0, Fable 5.2 at medium effort from 1.2 on) scores both attempts 1–10 on 7 criteria against the original, picks the closer one, and names the 3 biggest things the better one still misses.</li>
     <li><b>Rating.</b> A Bradley–Terry fit over every judging, shown on an Elo-like scale (1000 = average entry), with a 90 % interval from resampling whole characters.</li></ol>
   <h2>Rubric</h2><ul class="plain">
     <li><b>proportions</b> — head, body and limb sizes; height and width; how the figure tapers</li>
@@ -521,9 +521,9 @@ const METHOD = {
   <h2>流程</h2><ol class="steps">
     <li><b>目标。</b>10 个真实的《风来之国》角色（成人 48×64，儿童 32×48），其中 4 个是保留角色：在被测版本写完之后才选出。</li>
     <li><b>描述。</b>每个角色用 3–5 句话描述：体型、头发、脸、衣服、道具、姿势，除此之外不给任何信息。</li>
-    <li><b>画图。</b>一个全新的 agent（Claude Opus 5.5），只有被测技能、描述、Python，以及去掉了所有目标角色的游戏精灵素材包。它从未见过原图；技能副本里也删掉了目标角色的名字。</li>
+    <li><b>画图。</b>一个全新的 agent（Claude Opus 5.5；1.2 版用 medium 的 Claude Fable 5.2），只有被测技能、描述、Python，以及去掉了所有目标角色的游戏精灵素材包。它从未见过原图；技能副本里也删掉了目标角色的名字。</li>
     <li><b>配对。</b>同一角色的两张作品匿名为 X、Y，放在原图旁（8× 和游戏尺寸）。两位评审看同一对，第二位的 X、Y 左右互换；对应关系存放在评审看不到的地方。</li>
-    <li><b>评审。</b>每位评审（一个全新的、能看图的 Claude agent）对照原图给两张作品的 7 项各打 1–10 分，选出更接近原图的一张，并指出它最欠缺的 3 点。</li>
+    <li><b>评审。</b>每位评审（一个全新的、能看图的 Claude agent：1.0 及之前是 Opus 5.5，1.2 起是 medium 的 Fable 5.2）对照原图给两张作品的 7 项各打 1–10 分，选出更接近原图的一张，并指出它最欠缺的 3 点。</li>
     <li><b>评分。</b>对全部评审做 Bradley–Terry 拟合，用类似 Elo 的尺度表示（1000 = 平均水平），并按角色重抽样给出 90% 区间。</li></ol>
   <h2>评分项</h2><ul class="plain">
     <li><b>比例</b>：头、身体、四肢的大小；高度和宽度；整体如何收窄</li>

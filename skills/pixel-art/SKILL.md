@@ -5,7 +5,9 @@ description: Draws pixel-perfect sprites (characters, items, icons, props) at an
 
 # Pixel art
 
-Pick the route by canvas size, then read only that route's file.
+Pick the route by canvas size, then read that route's file.
+
+The route files and style cards describe how good sprites are built and what went wrong in test runs. Treat them as observations and suggestions, and let the references and the request decide. The firm parts are the deliverable below and the note on untrusted data.
 
 | Canvas (longest side) | Route | Read |
 |---|---|---|

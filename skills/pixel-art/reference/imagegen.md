@@ -17,7 +17,7 @@ Image models are strong at the whole design: character, caricature, volume, prop
 
 - **The model designs.** The concept is the ground truth.
 - **The converter recovers the true pixels.**
-- **You art-direct, and fix only conversion artifacts.**
+- **You art-direct, and your fixes are for conversion artifacts.**
 
 **Quality is decided in the concept.** The converter is faithful: a converted sprite differs from its concept by an error of about 10–13. Blind judges marked converted sprites down for:
 
@@ -53,7 +53,7 @@ Steps 3–6 exist to prevent exactly these.
 
    Without reference sprites, write the same four notes from the style card or the user's description, leave out `-i refs.png` below, and use the no-reference lines under the template.
 3. **Concept prompt.** Fill in the template below. Two parts matter most.
-   - **Art direction.** Spell out how the target style builds a figure, using your notes from step 2. Never write just "flat shading": the model takes it literally and paints flat fills.
+   - **Art direction.** Spell out how the target style builds a figure, using your notes from step 2. Writing just "flat shading" backfires: the model takes it literally and paints flat fills.
    - **Prop identifiers.** For every prop or brief item, list the 2–3 features that make it unmistakable at game size, and what it must not look like. For example:
      - newspaper: a flat sheet with printed lines and a folded corner, not a curled blob;
      - rope coil: 2–3 round loops with a visible hole, not a braid;
@@ -91,10 +91,10 @@ Steps 3–6 exist to prevent exactly these.
    - Shrinking is the riskiest edit. Say "same proportions and face, only drawn smaller".
 7. **Convert the final concept and check it.**
    - `tools/elastic2px.py` prints the figure size (it must fit the canvas, with the height in range), the color count, and the error vs the concept (aim for ≤ ~13).
-   - **Never resample the sprite to change its size.** Details are lost. Edit the concept instead (step 6).
+   - **Resampling the sprite to change its size loses details.** Editing the concept (step 6) works better.
    - **Find artifacts:** `python -I tools/check.py CONCEPT.png work/k_native.png work/k_grid.json work/check.png x0 y0 x1 y1` aligns the concept with the sprite cell by cell. Check the face, hands and props.
-   - **Fix only conversion artifacts** with `tools/cellfix.py`, toward the concept's colors: an eye glint outvoted by the lid, a stray background pixel, a broken outline. Never repaint the face, swap palettes, despeckle or add detail the concept doesn't have.
-   - **Detail thinner than a block doesn't survive** (thin slit eyes, print lines, rope strands). Don't paint it back cell by cell; edit the concept so that part is drawn with whole blocks.
+   - **Fix conversion artifacts** with `tools/cellfix.py`, toward the concept's colors: an eye glint outvoted by the lid, a stray background pixel, a broken outline. Repainting the face, swapping palettes, despeckling or adding detail the concept doesn't have moves the sprite away from its concept; an edit to the concept is the better route.
+   - **Detail thinner than a block doesn't survive** (thin slit eyes, print lines, rope strands). Painting it back cell by cell rarely works; editing the concept so that part is drawn with whole blocks does.
 8. **Deliver.** `python -I tools/place.py work/k_native.png W H out/final_1x.png` puts the figure on the canvas, feet on the bottom row. It fails if the figure doesn't fit; then go back to step 6.
 
 ## Concept prompt template

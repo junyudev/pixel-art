@@ -20,16 +20,19 @@ from kit.pixelkit import on_bg, upscale  # noqa: E402
 from kit.views import BG, grid_view, sheet  # noqa: E402
 from style_stats import fingerprint  # noqa: E402
 
-# Guardrails = p10..p90 of clean Eastward sprites (styles/eastward.md), split by size: 34 small (h < 44,
-# kids) and 186 adults. Outside = warn; inside does not mean good.
+# Guardrails = the full range of the clean Eastward sprites (styles/eastward.md), split by size: 34 small
+# (h < 44, kids) and 186 adults. Every real sprite is inside them, so a warning means no sprite in the game looks
+# like this; inside does not mean good. Numbers the real sprites spread across their whole scale (adults'
+# edge_ink, head_w, shoulder_w, feet_w) are printed in the fingerprint and have no guardrail.
 GUARD = {
-    "small": {"dark": (0.18, 0.31), "speckle": (0.05, 0.07), "cluster": (4.3, 6.5), "edge_ink": (0.58, 0.96),
-              "straight": (0.05, 0.27), "w": (17, 28), "head_w": (0.0, 0.92), "checker": (0.0, 0.015),
-              "flat_h": (0.0, 0.32)},
-    "adult": {"dark": (0.17, 0.32), "speckle": (0.03, 0.08), "cluster": (5.1, 7.8), "edge_ink": (0.72, 0.99),
-              "straight": (0.09, 0.32), "w": (23, 46), "shoulder_w": (0.56, 1.0), "feet_w": (0.0, 0.55),
-              "checker": (0.0, 0.015), "flat_h": (0.0, 0.33)},
+    "small": {"dark": (0.16, 0.36), "speckle": (0.04, 0.09), "cluster": (4.0, 7.5), "edge_ink": (0.40, 1.0),
+              "straight": (0.02, 0.51), "w": (17, 41), "checker": (0.0, 0.023), "flat_h": (0.0, 0.52)},
+    "adult": {"dark": (0.0, 0.52), "speckle": (0.02, 0.13), "cluster": (4.0, 10.8), "straight": (0.0, 0.65),
+              "w": (19, 66), "checker": (0.0, 0.023), "flat_h": (0.0, 0.64)},
 }
+# Three quarters of the real sprites mirror to within this share of their pixels; most of the rest hold a prop,
+# strike a pose or wear something to one side. Above it the figure gets a note, not a warning.
+MIRROR_SQUARE = 0.04
 WHY = {
     ("speckle", "hi"): "too many single pixels: merge them into shapes",
     ("speckle", "lo"): "almost no small marks: faces, hands and clothes probably lack drawn detail",
@@ -41,16 +44,13 @@ WHY = {
     ("edge_ink", "lo"): "silhouette barely inked: it will dissolve into backgrounds",
     ("straight", "hi"): "ruler-drawn slabs: break long straight contours with folds, notches, clumps and tapers",
     ("straight", "lo"): "contour is all jaggies: some straight runs (hems, boot soles) help it read",
-    ("w", "hi"): "wider than most references of this size: slim the torso, head or props",
-    ("w", "lo"): "narrower than most references of this size",
-    ("head_w", "hi"): "the head is the widest part: shrink it or widen the shoulders/arms band",
-    ("shoulder_w", "lo"): "still narrow at 40% height: the head/neck is too tall, shoulders start too low",
+    ("w", "hi"): "wider than any reference of this size: slim the torso, head or props",
+    ("w", "lo"): "narrower than any reference of this size",
     ("flat_h", "hi"): "front-view thinking: hems, belts, cuffs, collars and bands are flat lines; seen from in front "
                       "and above they are arcs sagging toward the viewer (arc_pts / band)",
     ("flat_h", "lo"): "",
     ("checker", "hi"): "checkerboard/woven texture (rope, beard, trousers): make each texture one or two shapes",
     ("checker", "lo"): "",
-    ("feet_w", "hi"): "barrel figure: seen from slightly above, legs taper to small feet close together",
 }
 
 
@@ -116,6 +116,9 @@ def main() -> None:
             print(f"WARN {k}={fp[k]:.2f} < {lo}: {WHY[(k, 'lo')]}")
         elif fp[k] > hi:
             print(f"WARN {k}={fp[k]:.2f} > {hi}: {WHY[(k, 'hi')]}")
+    if fp["mirror"] > MIRROR_SQUARE:
+        print(f"NOTE mirror={fp['mirror']:.2f} > {MIRROR_SQUARE}: left and right halves differ. In the game that usually "
+              "comes from a held prop, a pose or something worn to one side")
     print("region          px   bbox(x0,y0,x1,y1)     mean N·L   hi/base/shade/deep")
     for i, r in enumerate(fig.regions):
         m = b.owner == i
