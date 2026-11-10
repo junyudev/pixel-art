@@ -22,7 +22,7 @@ The skill needs Python with `pillow`, `numpy` and `scipy`. It works with Claude 
 
 Agents redraw 10 real Eastward (风来之国) characters from a 3–5 sentence brief, never seeing the original. Two blind judges compare each drawing with the original on 7 criteria; a Bradley–Terry fit over every judging ranks the entries. A second suite covers 16×16 and 32×32 sprites with no original.
 
-- pixel-art 1.2 on Claude Fable 5.2 (medium effort) beat the anchor version's drawings 15–5, level with 1.0 on Opus 5.5 at about a third of the cost and a fifth of the time per sprite. From 1.2 on the judges are Fable 5.2 too.
+- pixel-art 1.2 on Claude Fable 5.2 (medium effort) beat the anchor version's drawings 15–5; the same model with no skill went 6–14. That is level with 1.0 on Opus 5.5 (xhigh) at about a third of the cost and a fifth of the time per sprite. From 1.2 on the judges are Fable 5.2 too.
 - Its three worked examples are real Eastward sprites rebuilt pixel for pixel, and its guidance is worded as observations of the game's art rather than rules.
 - Its grid route beat plain Opus 9–1 at 16×16.
 

@@ -38,15 +38,15 @@ const S = {
     archiveName: "Archive: early briefs", archiveDesc: "Three invented briefs from the first rounds (v1–v10), judged pairwise with reference sprites but no original.",
     runs: (n) => `${n} judgings`, rating: "Rating", boardTitle: "Leaderboard",
     boardNote: "Rating: a Bradley–Terry fit over every paired judging, on an Elo-like scale where 1000 is the average entry. The bar is a 90 % interval from resampling whole characters. Overlapping bars mean the judges can't tell those entries apart yet.",
-    thEntry: "Entry", thRating: "Rating (90 % interval)", thVs: "vs v12", thMean: "Mean /70", thCost: "Cost ≈", thCalls: "Calls", thOut: "Output", thMin: "Minutes", thDrawn: "Drawn",
+    thEntry: "Entry", thRating: "Rating (90 % interval)", thVs: "vs v12", thMean: "Mean /70", thCost: "Cost", thCalls: "Calls", thOut: "Output", thMin: "Minutes", thDrawn: "Drawn",
     histTitle: "Ratings across versions", histNote: "In the order the versions were written. Each new rule set was meant to fix what judges complained about; the ratings stayed within each other's intervals. Dashed lines: the same models with no skill.",
     critTitle: "Scores by criterion", critNote: "Mean score out of 10 over every judging of the entry. Opponents differ between entries, so read rows, not small gaps.",
-    costNote: "Per drawing, median: cost, API calls, output tokens and active minutes (interruptions subtracted). Cost ≈ API list price ÷ 50: the author found the skill's runs hit the prompt cache heavily, so ÷ 50 estimates what a drawing really costs on a subscription. List prices per million tokens in / out: Fable 5.2 $8 / $40, Opus 5.5 $4 / $20, GPT-6 Astra $10 / $50. Image generation (image-gen, concept route) is not included.",
-    costFoot: "Cost per sprite ≈ API list price ÷ 50: the author found the skill's runs hit the prompt cache heavily, so ÷ 50 estimates the real cost on a subscription. Image generation is not included.",
-    perSprite: (v) => `≈ ${v} per sprite`,
+    costNote: "Per drawing, median: cost, API calls, output tokens and active minutes (interruptions subtracted). Cost is the API list price of the run, cache reads and writes included. List prices per million tokens in / out: Fable 5.2 $8 / $40, Opus 5.5 $4 / $20, GPT-6 Astra $10 / $50. Image generation (image-gen, concept route) is not included.",
+    costFoot: "Cost per sprite is the API list price of the run, cache reads and writes included. Image generation is not included.",
+    perSprite: (v) => `${v} per sprite`,
     charsLead: "Each character is drawn only from its brief. Held-out characters were chosen after the skill version under test was written.",
     heldout: "held out", brief: "Brief", attemptsTitle: "Every attempt", best: "best", won: "won", notes: "What the judges said was still missing",
-    noJudging: "not judged", cost: (c) => `${c.usd != null ? `≈ ${fmtUsd(c.usd)} · ` : ""}${c.calls != null ? `${c.calls} calls · ` : ""}${Math.round(c.out / 1000)}k out · ${Math.round(c.minutes)} min`,
+    noJudging: "not judged", cost: (c) => `${c.usd != null ? `${fmtUsd(c.usd)} · ` : ""}${c.calls != null ? `${c.calls} calls · ` : ""}${Math.round(c.out / 1000)}k out · ${Math.round(c.minutes)} min`,
     smallLead: "Fixed briefs at 16×16 and 32×32 with no original to copy. Each pair of drawings is judged blind by two judges, sides swapped, on readability, silhouette, form, palette, cleanliness, brief and appeal.",
     smallPairs: "Head to head", smallTasks: "Every task", pending: "waiting for results",
     archiveLead: "The first rounds used invented briefs and no original: two versions side by side, judged with reference sprites for style. v1 and v3 predate the judging; v10 was stopped before it.",
@@ -86,15 +86,15 @@ const S = {
     archiveName: "存档：早期测试题", archiveDesc: "最早几轮（v1–v10）的三道自拟题目：有参考精灵图但没有原图，两两盲评。",
     runs: (n) => `${n} 次评审`, rating: "评分", boardTitle: "排行榜",
     boardNote: "评分：对全部成对评审做 Bradley–Terry 拟合，采用类似 Elo 的尺度，1000 为平均水平。横条是按角色重抽样得到的 90% 区间；区间重叠说明评审目前还分不出高下。",
-    thEntry: "版本", thRating: "评分（90% 区间）", thVs: "对 v12", thMean: "平均 /70", thCost: "成本 ≈", thCalls: "调用", thOut: "输出", thMin: "分钟", thDrawn: "图数",
+    thEntry: "版本", thRating: "评分（90% 区间）", thVs: "对 v12", thMean: "平均 /70", thCost: "成本", thCalls: "调用", thOut: "输出", thMin: "分钟", thDrawn: "图数",
     histTitle: "各版本的评分", histNote: "按版本编写的先后排列。每一版新规则都是针对评审的意见写的，但评分始终落在彼此的区间之内。虚线：同样的模型不用技能。",
     critTitle: "各项得分", critNote: "该版本在所有评审中的平均分（满分 10）。各版本的对手不同，看整行，不要看细微差距。",
-    costNote: "每张图的中位数：成本、API 调用次数、输出 token、实际用时（已扣除中断）。成本 ≈ API 标价 ÷ 50：作者发现这个技能在执行过程中缓存命中率很高，所以按 ÷ 50 估算订阅下每张图的实际成本。每百万 token 输入/输出标价：Fable 5.2 $8 / $40，Opus 5.5 $4 / $20，GPT-6 Astra $10 / $50。生图（image-gen、生图路线）的图像生成费用未计入。",
-    costFoot: "每张图成本 ≈ API 标价 ÷ 50：作者发现这个技能在执行过程中缓存命中率很高，所以按 ÷ 50 估算订阅下的实际成本。图像生成费用未计入。",
-    perSprite: (v) => `每张约 ${v}`,
+    costNote: "每张图的中位数：成本、API 调用次数、输出 token、实际用时（已扣除中断）。成本按 API 标价计算，含缓存读写。每百万 token 输入/输出标价：Fable 5.2 $8 / $40，Opus 5.5 $4 / $20，GPT-6 Astra $10 / $50。生图（image-gen、生图路线）的图像生成费用未计入。",
+    costFoot: "每张图成本按 API 标价计算，含缓存读写。图像生成费用未计入。",
+    perSprite: (v) => `每张 ${v}`,
     charsLead: "每个角色只凭描述来画。“保留角色”是在被测版本写完之后才选出的。",
     heldout: "保留", brief: "描述", attemptsTitle: "全部作品", best: "最佳", won: "胜", notes: "评审认为还欠缺的地方",
-    noJudging: "未评审", cost: (c) => `${c.usd != null ? `≈ ${fmtUsd(c.usd)} · ` : ""}${c.calls != null ? `${c.calls} 次调用 · ` : ""}输出 ${Math.round(c.out / 1000)}k · ${Math.round(c.minutes)} 分钟`,
+    noJudging: "未评审", cost: (c) => `${c.usd != null ? `${fmtUsd(c.usd)} · ` : ""}${c.calls != null ? `${c.calls} 次调用 · ` : ""}输出 ${Math.round(c.out / 1000)}k · ${Math.round(c.minutes)} 分钟`,
     smallLead: "16×16 和 32×32 的固定题目，没有原图可照。每对作品由 2 位评审盲评（左右互换），评可读性、轮廓、体积、配色、干净程度、切题和吸引力。",
     smallPairs: "两两对比", smallTasks: "全部题目", pending: "等待结果",
     archiveLead: "最早几轮用的是自拟题目、没有原图：两个版本并排，评审参照风格参考图打分。v1、v3 早于评审流程，v10 在评审前被叫停。",
@@ -120,9 +120,9 @@ const NAMES = {
 const taskName = (id) => (NAMES[id] ? NAMES[id][lang === "zh" ? 1 : 0] : id);
 // Reconstruction entries by model and skill (true = with pixel-art, false = the no-skill baseline, if drawn).
 const RELEASE_RECON = "fablem";
-const RECON = { fable: { name: "Fable 5.2", true: RELEASE_RECON }, opus: { name: "Opus 5.5", true: "v8R", false: "opusraw" }, astra: { name: "GPT-6 Astra", true: "astra", false: "astraraw" } };
+const RECON = { fable: { name: "Fable 5.2 medium", true: RELEASE_RECON, false: "fableraw" }, opus: { name: "Opus 5.5 xhigh", true: "v8R", false: "opusraw" }, astra: { name: "GPT-6 Astra xhigh", true: "astra", false: "astraraw" } };
 // 16×16 showcase rows: model, skill entry, no-skill entry.
-const SHEET = [["Opus 5.5", "opusx", "base"], ["GPT-6 Astra", "astra", "astraraw"]];
+const SHEET = [["Opus 5.5 xhigh", "opusx", "base"], ["GPT-6 Astra xhigh", "astra", "astraraw"]];
 let heroTimer = null;
 
 // ---------- helpers ----------
@@ -132,7 +132,7 @@ const task = (id) => D.recon.tasks.find((x) => x.id === id);
 const mean = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
 const avgTotal = (a) => (a.judgings.length ? mean(a.judgings.map((j) => j.total)) : null);
 const winsOf = (a) => a.judgings.filter((j) => j.won).length;
-// Shown cost (API list price ÷ 50, computed in eval/site.py): cents keep a third digit.
+// Shown cost (API list price, computed in eval/site.py): amounts under 10 cents keep a third digit.
 const fmtUsd = (v) => (v == null ? "—" : `$${v >= 0.1 ? v.toFixed(2) : v.toFixed(3)}`);
 const medUsd = (atts) => {
   const v = atts.map((a) => a.cost?.usd).filter((x) => x != null).sort((a, b) => a - b);
@@ -298,7 +298,7 @@ function conceptSection() {
 function reconSection() {
   const R = D.recon;
   const rows = [[t("original"), null], ...Object.values(RECON).flatMap((m) => [[m.name, m.true, true], [m.name, m.false, false]])]
-    .filter(([, e]) => !e || R.attempts.some((a) => a.entry === e));
+    .filter(([, e], i) => i === 0 || R.attempts.some((a) => a.entry === e));  // row 0 is the originals
   const cell = (x, e) => {
     const a = e ? R.attempts.find((q) => q.task === x.id && q.entry === e) : x.original;
     const tip = `${x.name} · ${e ? entryLabel(e) + (a && a.judgings.length ? ` · ${avgTotal(a).toFixed(0)}${t("of70")}` : "") : t("original")}`;

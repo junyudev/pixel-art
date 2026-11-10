@@ -43,7 +43,9 @@ html[lang="zh"] h1 { font-size: clamp(30px, 4.4vw, 50px); }
   display: flex; align-items: center; gap: 10px; margin: 0 0 18px; text-transform: uppercase; }
 .eyebrow::before { content: ""; width: 8px; height: 8px; background: var(--accent); }
 .holo { background: linear-gradient(90deg, #8fe0a8, #7cc4f5, #b7a0f5, #f59cd0, #f5c27c); -webkit-background-clip: text; background-clip: text;
-  color: transparent; text-shadow: none; }
+  color: transparent; text-shadow: none;
+  /* The fallback CJK font sits lower than the Latin one: pad the inline box so the clipped gradient covers it. */
+  padding-block: .3em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .muted { color: var(--muted); } .faint { color: var(--faint); } .small { font-size: 15px; } .tiny { font-size: 13px; }
 .lead { font-size: 19px; color: var(--muted); max-width: 680px; }
 p.note { color: var(--muted); font-size: 15px; max-width: 760px; margin: 4px 0 18px; }
