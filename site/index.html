@@ -11,15 +11,20 @@
 <link rel="stylesheet" href="style.css">
 <script>
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
-  // Language: ?lang=zh|en in the URL, then a choice made with the toggle in this tab, then the first Chinese or
-  // English entry in the browser's preferred languages. The toggle is not remembered across visits, so the page
-  // always follows the visitor's browser by default.
+  // Language: ?lang=zh|en in the URL, then a choice made with the toggle in this tab, then the visitor's system.
+  // Chinese when Chinese is among the preferred languages and either outranks English or the system is set to a
+  // Chinese-speaking region (e.g. en-CN: English interface, region China), otherwise English. The toggle is not
+  // remembered across visits, so a new visit always follows the system.
   (() => {
     const pick = (v) => (v === "zh" || v === "en" ? v : null);
-    const browser = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"])
-      .map((l) => l.toLowerCase().split("-")[0]).find((l) => l === "zh" || l === "en");
+    const tags = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"])
+      .map((tag) => { try { return new Intl.Locale(tag); } catch { return null; } }).filter(Boolean);
+    const zh = tags.findIndex((l) => l.language === "zh"), en = tags.findIndex((l) => l.language === "en");
+    // a region written on a non-Chinese tag is the system region; zh tags carry their own region
+    const chineseRegion = tags.some((l) => l.language !== "zh" && ["CN", "TW", "HK", "MO"].includes(l.region));
+    const system = zh >= 0 && (en < 0 || zh < en || chineseRegion) ? "zh" : "en";
     localStorage.removeItem("lang");  // older builds remembered the toggle forever
-    document.documentElement.lang = pick(new URLSearchParams(location.search).get("lang")) || pick(sessionStorage.getItem("lang")) || browser || "en";
+    document.documentElement.lang = pick(new URLSearchParams(location.search).get("lang")) || pick(sessionStorage.getItem("lang")) || system;
   })();
 </script>
 </head>

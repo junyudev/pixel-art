@@ -122,8 +122,8 @@ const NAMES = {
 const taskName = (id) => (NAMES[id] ? NAMES[id][lang === "zh" ? 1 : 0] : id);
 // Reconstruction entries by model and skill (true = with pixel-art, false = the no-skill baseline, if drawn).
 const RELEASE_RECON = "fablem";
-const RECON = { fable: { name: "Fable 5.2 medium", true: RELEASE_RECON, false: "fableraw" }, opus: { name: "Opus 5.5 xhigh", true: "v8R", false: "opusraw" },
-  astra: { name: "GPT-6 Astra xhigh", true: "astra", false: "astraraw" }, gemini: { name: "Gemini 4 Neon high", true: "gneon", false: "gneonraw" } };
+const RECON = { gemini: { name: "Gemini 4 Neon high", true: "gneon", false: "gneonraw" }, fable: { name: "Fable 5.2 medium", true: RELEASE_RECON, false: "fableraw" },
+  opus: { name: "Opus 5.5 xhigh", true: "v8R", false: "opusraw" }, astra: { name: "GPT-6 Astra xhigh", true: "astra", false: "astraraw" } };
 // 16×16 showcase rows: model, skill entry, no-skill entry.
 const SHEET = [["Opus 5.5 xhigh", "opusx", "base"], ["GPT-6 Astra xhigh", "astra", "astraraw"]];
 let heroTimer = null;
