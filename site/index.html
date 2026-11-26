@@ -11,9 +11,16 @@
 <link rel="stylesheet" href="style.css">
 <script>
   document.documentElement.dataset.theme = localStorage.getItem("theme") || "dark";
-  // ?lang=zh|en in the URL wins, then the saved choice, then the browser language
-  document.documentElement.lang = new URLSearchParams(location.search).get("lang") || localStorage.getItem("lang")
-    || (navigator.language.startsWith("zh") ? "zh" : "en");
+  // Language: ?lang=zh|en in the URL, then a choice made with the toggle in this tab, then the first Chinese or
+  // English entry in the browser's preferred languages. The toggle is not remembered across visits, so the page
+  // always follows the visitor's browser by default.
+  (() => {
+    const pick = (v) => (v === "zh" || v === "en" ? v : null);
+    const browser = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"])
+      .map((l) => l.toLowerCase().split("-")[0]).find((l) => l === "zh" || l === "en");
+    localStorage.removeItem("lang");  // older builds remembered the toggle forever
+    document.documentElement.lang = pick(new URLSearchParams(location.search).get("lang")) || pick(sessionStorage.getItem("lang")) || browser || "en";
+  })();
 </script>
 </head>
 <body>

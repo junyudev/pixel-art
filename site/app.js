@@ -27,7 +27,8 @@ const S = {
     conceptTitle: "64×64, from a gpt-image concept", conceptLead: "The concept route: Codex image generation designs the character, a converter recovers the true pixels, and the agent picks, edits and cleans up.",
     conceptA: "gpt-image concept", conceptB: "true pixels",
     reconTitle: "Redrawn from three lines", reconLead: "Real Eastward characters, drawn from a 3–5 sentence brief by an agent that never saw them, then judged blind against the original.",
-    vsV12: (w, n) => `vs v12: ${w}–${n - w}`, setSuite: "Benchmark tasks", setShowcase: "Showcase · 16×16", setConcept: "Concept route · 64×64",
+    vsV12: (w, n) => `vs v12: ${w}–${n - w}`, notJudged: (n, all) => `${n} of ${all} drawn · not judged yet`,
+    pageTitle: "Pixel Bench — a pixel-art benchmark and the pixel-art skill", setSuite: "Benchmark tasks", setShowcase: "Showcase · 16×16", setConcept: "Concept route · 64×64",
     ctaBoard: "See the leaderboard", ctaSkill: "Get the skill",
     stChars: "characters", stEntries: "entries", stTasks: "tasks", stDrawings: "drawings", stJudgings: "judgings",
     original: "original", redrawn: "redrawn", heroCaption: (n, e) => `${n}: the original next to ${e}'s drawing from the brief alone.`,
@@ -75,7 +76,8 @@ const S = {
     conceptTitle: "64×64，从 gpt-image 概念图出发", conceptLead: "生图路线：Codex 的 gpt-image 设计角色，转换器还原真正的像素，agent 负责挑选、修改和清理。",
     conceptA: "gpt-image 概念图", conceptB: "真像素",
     reconTitle: "只凭三行描述重画", reconLead: "真实的《风来之国》角色，由从未见过原图的 agent 只凭 3–5 句描述画出，再与原图对照盲评。",
-    vsV12: (w, n) => `对 v12：${w}–${n - w}`, setSuite: "测试题", setShowcase: "展示 · 16×16", setConcept: "生图路线 · 64×64",
+    vsV12: (w, n) => `对 v12：${w}–${n - w}`, notJudged: (n, all) => `画了 ${n}/${all} 个 · 尚未评审`,
+    pageTitle: "Pixel Bench：像素画评测与 pixel-art 技能", setSuite: "测试题", setShowcase: "展示 · 16×16", setConcept: "生图路线 · 64×64",
     ctaBoard: "查看排行榜", ctaSkill: "获取技能",
     stChars: "个角色", stEntries: "个参赛版本", stTasks: "道题", stDrawings: "张图", stJudgings: "次评审",
     original: "原图", redrawn: "重画", heroCaption: (n, e) => `${n}：原图与 ${e} 只凭描述画出的图。`,
@@ -120,7 +122,8 @@ const NAMES = {
 const taskName = (id) => (NAMES[id] ? NAMES[id][lang === "zh" ? 1 : 0] : id);
 // Reconstruction entries by model and skill (true = with pixel-art, false = the no-skill baseline, if drawn).
 const RELEASE_RECON = "fablem";
-const RECON = { fable: { name: "Fable 5.2 medium", true: RELEASE_RECON, false: "fableraw" }, opus: { name: "Opus 5.5 xhigh", true: "v8R", false: "opusraw" }, astra: { name: "GPT-6 Astra xhigh", true: "astra", false: "astraraw" } };
+const RECON = { fable: { name: "Fable 5.2 medium", true: RELEASE_RECON, false: "fableraw" }, opus: { name: "Opus 5.5 xhigh", true: "v8R", false: "opusraw" },
+  astra: { name: "GPT-6 Astra xhigh", true: "astra", false: "astraraw" }, gemini: { name: "Gemini 4 Neon high", true: "gneon", false: "gneonraw" } };
 // 16×16 showcase rows: model, skill entry, no-skill entry.
 const SHEET = [["Opus 5.5 xhigh", "opusx", "base"], ["GPT-6 Astra xhigh", "astra", "astraraw"]];
 let heroTimer = null;
@@ -307,7 +310,8 @@ function reconSection() {
   const label = ([name, e, skill]) => {
     if (!e) return `<span class="row orig">${esc(name)}</span>`;
     const r = R.leaderboard.find((q) => q.entry === e);
-    const notes = [r && r.vsAnchor.n ? t("vsV12", r.vsAnchor.w, r.vsAnchor.n) : "", r && r.usd != null ? t("perSprite", fmtUsd(r.usd)) : ""].filter(Boolean);
+    const drawn = R.attempts.filter((a) => a.entry === e).length;
+    const notes = [r && r.vsAnchor.n ? t("vsV12", r.vsAnchor.w, r.vsAnchor.n) : t("notJudged", drawn, R.tasks.length), r && r.usd != null ? t("perSprite", fmtUsd(r.usd)) : ""].filter(Boolean);
     return `<span class="row ${skill ? "" : "plain"}">${esc(name)} · ${skill ? "pixel-art" : esc(t("noSkill"))}${notes.length ? `<em>${notes.join(" · ")}</em>` : ""}</span>`;
   };
   return `<section id="construct"><p class="eyebrow">Construct route · Eastward</p><h2>${t("reconTitle")}</h2><p class="note">${t("reconLead")}</p>
@@ -606,6 +610,7 @@ function render() {
   $("#main").innerHTML = view();
   document.querySelectorAll("[data-t]").forEach((el) => (el.textContent = t(el.dataset.t)));
   $("#lang").textContent = lang === "zh" ? "EN" : "中文";
+  document.title = t("pageTitle");
   $("#theme").textContent = html.dataset.theme === "dark" ? "☀" : "☾";
   $("#foot").innerHTML = `<div><h4>${t("footA")}</h4>${ROUTES.map(([href, k]) => `<a href="${href}">${t(k)}</a>`).join("")}<a href="#/archive">${t("archiveName")}</a></div>
     <div style="max-width:520px"><h4>${t("footB")}</h4><a href="${REPO}">github.com/junyudev/pixel-art</a><p>${t("footNote")}</p></div>`;
@@ -614,7 +619,7 @@ function render() {
   if (!page) startHero();
 }
 
-$("#lang").addEventListener("click", () => { lang = lang === "zh" ? "en" : "zh"; html.lang = lang; localStorage.setItem("lang", lang); render(); });
+$("#lang").addEventListener("click", () => { lang = lang === "zh" ? "en" : "zh"; html.lang = lang; sessionStorage.setItem("lang", lang); render(); });
 $("#theme").addEventListener("click", () => { html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark"; localStorage.setItem("theme", html.dataset.theme); render(); });
 window.addEventListener("hashchange", render);
 document.addEventListener("click", (e) => {
